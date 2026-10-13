@@ -8,13 +8,38 @@ from util.notice import email_notice
 from util.timestamp import get_now
 
 
+class SessionError(RuntimeError):
+    """The RainClassroom session can no longer be used safely."""
+
+
+SESSION_HELP = (
+    "请检查或更新 GitHub Actions 的 SESSION Secret 后重试；"
+    "若仍失败，请检查雨课堂服务状态。"
+)
+
+
 # 获取正在进行的
 def get_listening():
     response = requests.get(host + api["get_listening"], headers=headers, timeout=15)
+    if response.status_code in (401, 403):
+        raise SessionError(
+            f"雨课堂课程接口返回 HTTP {response.status_code}（未授权）。{SESSION_HELP}"
+        )
     if response.status_code == 200:
-        response_data = response.json()
-        return response_data["data"]
+        try:
+            response_data = response.json()
+        except ValueError:
+            raise SessionError(
+                f"雨课堂课程接口返回非 JSON 内容，可能是登录过期后的跳转页面。{SESSION_HELP}"
+            ) from None
+        data = response_data.get("data") if isinstance(response_data, dict) else None
+        if not isinstance(data, dict) or not isinstance(data.get("onLessonClassrooms"), list):
+            raise SessionError(
+                f"雨课堂课程接口缺少有效的课程列表，可能是登录过期或接口变化。{SESSION_HELP}"
+            )
+        return data
     else:
+        response.raise_for_status()
         return None
 
 
@@ -46,6 +71,12 @@ def get_listening_classes_and_sign(filtered_courses: list, seen_lesson_ids=None,
                     print("\n发现上课")
                     found_new_class = True
                 response_sign = check_in_on_listening(lesson_id)
+
+                if response_sign.status_code in (401, 403):
+                    raise SessionError(
+                        f"雨课堂签到接口返回 HTTP {response_sign.status_code}（未授权）。"
+                        f"{SESSION_HELP}"
+                    )
 
                 if response_sign.status_code == 200:
                     status = "签到成功"

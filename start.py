@@ -1,4 +1,5 @@
 import os
+import sys
 import threading
 import time
 from datetime import datetime
@@ -7,7 +8,7 @@ import requests
 
 from config import filtered_courses
 from function.course_schedule import current_monitor_window
-from function.check_in import get_listening_classes_and_sign
+from function.check_in import SessionError, get_listening_classes_and_sign
 from function.listen_window import CHINA_TIME
 
 
@@ -51,5 +52,14 @@ def main():
             thread.join(timeout=max(0, deadline - time.monotonic()))
         print("监听窗口结束，已停止本次检查", flush=True)
 
+
+def run():
+    try:
+        main()
+    except SessionError as error:
+        print(f"运行停止：{error}", file=sys.stderr, flush=True)
+        raise SystemExit(1) from None
+
+
 if __name__ == "__main__":
-    main()
+    run()

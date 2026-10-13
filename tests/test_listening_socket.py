@@ -47,6 +47,76 @@ class FakeWebSocket:
 
 
 class ListeningSocketTests(unittest.TestCase):
+    def test_valid_course_list_remains_usable(self):
+        from function import check_in
+
+        data = {"onLessonClassrooms": [], "upcomingExam": []}
+        response = types.SimpleNamespace(status_code=200, json=lambda: {"data": data})
+        with mock.patch.object(check_in.requests, "get", return_value=response):
+            self.assertEqual(data, check_in.get_listening())
+
+    def test_expired_session_payload_has_safe_actionable_error(self):
+        from function import check_in
+
+        response = types.SimpleNamespace(
+            status_code=200,
+            json=lambda: {"data": "private server response: please log in"},
+        )
+        with mock.patch.object(check_in.requests, "get", return_value=response):
+            with self.assertRaises(check_in.SessionError) as caught:
+                check_in.get_listening()
+        self.assertIn("SESSION", str(caught.exception))
+        self.assertIn("课程列表", str(caught.exception))
+        self.assertNotIn("private server response", str(caught.exception))
+
+    def test_unauthorized_session_has_safe_actionable_error(self):
+        from function import check_in
+
+        response = types.SimpleNamespace(status_code=401)
+        with mock.patch.object(check_in.requests, "get", return_value=response):
+            with self.assertRaises(check_in.SessionError) as caught:
+                check_in.get_listening()
+        self.assertIn("SESSION", str(caught.exception))
+        self.assertIn("HTTP 401", str(caught.exception))
+
+    def test_login_redirect_html_has_safe_actionable_error(self):
+        from function import check_in
+
+        response = types.SimpleNamespace(
+            status_code=200,
+            json=lambda: (_ for _ in ()).throw(ValueError("private response")),
+        )
+        with mock.patch.object(check_in.requests, "get", return_value=response):
+            with self.assertRaises(check_in.SessionError) as caught:
+                check_in.get_listening()
+        self.assertIn("非 JSON", str(caught.exception))
+        self.assertNotIn("private response", str(caught.exception))
+
+    def test_session_expiring_between_listing_and_sign_in_stops(self):
+        from function import check_in
+
+        lesson = {"courseName": "test course", "lessonId": 123}
+        response = types.SimpleNamespace(status_code=401)
+        with mock.patch.object(check_in, "get_listening", return_value={
+            "onLessonClassrooms": [lesson]
+        }), mock.patch.object(check_in, "check_in_on_listening", return_value=response):
+            with self.assertRaises(check_in.SessionError) as caught:
+                check_in.get_listening_classes_and_sign([])
+        self.assertIn("SESSION", str(caught.exception))
+
+    def test_start_prints_safe_session_hint_and_exits_nonzero(self):
+        import start
+        from function.check_in import SessionError
+
+        stderr = io.StringIO()
+        with mock.patch.object(start, "main", side_effect=SessionError("更新 SESSION Secret")), \
+                contextlib.redirect_stderr(stderr):
+            with self.assertRaises(SystemExit) as caught:
+                start.run()
+        self.assertEqual(1, caught.exception.code)
+        self.assertIn("更新 SESSION Secret", stderr.getvalue())
+        self.assertNotIn("Traceback", stderr.getvalue())
+
     def test_configured_window_checks_repeatedly_then_stops(self):
         import start
         from function.listen_window import CHINA_TIME
