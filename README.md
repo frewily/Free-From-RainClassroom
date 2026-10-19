@@ -1,5 +1,7 @@
 # 长江雨课堂定时签到+听课答题
-**🌟 雨课堂、荷花、黄河等应该就HOST和API不同吧，可以自己试试，改下API应该就行?**
+本项目通过 Python 检查正在进行的课堂、签到，并按课程筛选配置监听和处理题目。云端采用 Cloudflare Workers 按课表调度、GitHub Actions 执行；也支持本地 / 服务器运行，以及可选的合工大课表同步和 Android 日历提醒。
+
+当前默认适配长江雨课堂。其他雨课堂站点的域名、接口和认证方式需自行核对，不能保证只替换 HOST 就能使用。
 
 ## 方法1：Cloudflare Workers + GitHub Actions（推荐的云端调度方式）
 
@@ -42,32 +44,37 @@ Cloudflare 每 5 分钟检查一次是否需要**启动任务**；`start.py` 在
 - 不配置教务 Secrets 时，Actions 按 `LISTEN_WINDOWS` 运行，即使仓库有 JSON 也不会自动启用课表模式。其他学校可以自行维护同格式 JSON 供 Worker 调度，但仍须配置对应的 `LISTEN_WINDOWS` 才能让当前 Actions 在窗口内持续监听；单独添加 JSON 不够。后文的服务器环境可显式设置 `COURSE_SCHEDULE_ENABLED=true`。
 - 修改 `FILTERED_COURSES` 后先运行课表刷新工作流，核对提交后的 JSON，再用 Worker 预览，避免两端依据不同数据。不要使用从别人的 fork 继承的课表调度自己的账号。
 
-### Cloudflare 控制台部署与配置
+### Worker 源码与从零部署
 
-**部署来源说明：** 当前 Worker 通过 Cloudflare 控制台部署，本仓库没有 Worker 源码、Wrangler 配置或自动部署流程。以下记录现有部署的行为与配置；从零复现还需要取得现有 Worker 源码并核对接口约定。不能只创建空 Worker、填写变量就认为调度已实现。`/preview` 的日期字段、密钥所在请求头或请求体字段及返回结构未在仓库定义，应以实际部署源码或脱敏联调记录为准，这里不编造接口格式。
+本次将用户提供的控制台运行源码原样保存为 [`cloudflare/worker.js`](cloudflare/worker.js)，未重写算法、改动 API 或迁移配置开关。此来源说明不代表已独立连接 Cloudflare 比对线上版本。仓库新增以下文件，不包含真实凭据或生产 Namespace ID：
 
-1. **准备 GitHub。** 在自己的仓库启用 Actions，确认 `main` 上存在上述工作流，完成基础 Secrets 配置并核对公开课表。Fork 用户须把 Worker 中仓库、Raw URL、API 路径和分支一起改成自己的，避免触发本仓库。
-2. **创建最小权限 PAT。** 在 GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens 创建令牌，Resource owner 选择目标仓库所有者，Repository access 仅选择目标仓库，Repository permissions 仅额外授予 **Actions: Read and write**（Metadata 为必需只读权限）。为令牌设置有效期并安排轮换；组织仓库还需检查审批策略。此令牌无需为了 dispatch 获取 Contents 写权限。课表刷新工作流自身的 `contents: write` 是另一个用途。
-3. **创建 Worker。** 在 Cloudflare Workers & Pages 创建 Worker，将现有调度源码导入控制台编辑器并部署。核对它包含 `scheduled()`、课表读取和北京时间转换、15 分钟窗口判断、同一开课时间合并、KV 检查、dispatch、接口鉴权，以及演练开关逻辑。课表 URL 为 `https://raw.githubusercontent.com/frewily/Fuck-Yangtze-RainClassroom/main/data/course_schedule.json`；公开读取不需要 PAT，不应把 PAT 发给 Raw 域名。
-4. **创建并绑定 KV。** 在 Cloudflare 的 KV 管理页创建 Namespace，在 Worker Settings 的 Bindings 中新增 KV Namespace binding，变量名必须为 `TRIGGER_KV`，选择刚创建的 Namespace。绑定到实际部署环境；仅创建 Namespace 而未绑定不可用。
-5. **配置 Secrets 和变量。** 在 Worker Settings 的 Variables and Secrets 中添加下表项目，保存后部署生效。先使用演练模式检查课表匹配和日志；确认源码确实将开关关闭值解释为不自动 dispatch，再开启正式模式。控制台常以字符串保存变量，须按源码要求填写和解析，不能把字符串 `"false"` 当成布尔真值。
-6. **添加 Cron Trigger。** 在 Worker 的 Triggers / Cron Triggers 配置 `*/5 * * * *`，保存并确认触发器关联当前 Worker。Cron 调用的是 `scheduled()`，不依赖浏览器访问 HTTP 路由；配置传播可能需要等待，以日志确认生效。
-7. **按下文验证。** 先做只读预览，再做受保护的真实测试，最后观察真实课程窗口。`/test` 是真实触发接口，演练时也不要误调用；其是否受 `AUTO_DISPATCH` 限制须核对源码，不能将此开关视为 HTTP 接口的统一禁用开关。
+```text
+cloudflare/
+├── worker.js                 # 用户提供的原始 Worker 源码
+├── wrangler.jsonc.example    # 需复制并填写的部署示例，默认不注册 Cron
+├── worker.test.mjs           # Node.js 自带测试工具，HTTP / KV 均为本地模拟
+└── README.md                 # 完整部署、接口和风险说明
+```
 
-| 名称 | Cloudflare 配置类型 | 用途 |
+完整操作见 [Cloudflare 部署与维护指南](cloudflare/README.md)：准备自己的仓库和筛选课表 → 配置 GitHub Actions → 创建独立 Worker / KV → 设置两个 Secrets → 验证 `/preview` → 经部署者确认后做真实 `/test` → 开启 Cron。Wrangler 配置需从 `.example` 复制为 `cloudflare/wrangler.jsonc`；本地配置、凭据和生成文件已加入忽略规则。不要对现有生产 Worker 直接套用示例，空 Cron 列表和占位绑定都不代表生产配置。
+
+| 名称 | 实际配置类型 | 用途 |
 | --- | --- | --- |
-| `GITHUB_TOKEN` | Secret | 上一步创建的 fine-grained PAT，用于 GitHub API dispatch；不是 Actions 自动注入的同名令牌 |
-| `TEST_TRIGGER_KEY` | Secret | 保护 `POST /preview` 和 `POST /test`，使用独立高强度随机值 |
+| `GITHUB_TOKEN` | Cloudflare Secret | fine-grained PAT，仅授权自己的目标仓库及 Actions 写权限；不是 Actions 自动注入的同名令牌 |
+| `TEST_TRIGGER_KEY` | Cloudflare Secret | `/preview` 和 `/test` 均使用 `Authorization: Bearer <测试密钥>` |
 | `TRIGGER_KV` | KV Namespace binding | 保存 GitHub 已接受的课程触发请求记录 |
-| `AUTO_DISPATCH` | 普通变量 / 源码约定的开关 | 区分 Cron 演练与正式自动提交；当前部署据用户确认已开启 |
+| `AUTO_DISPATCH` | **worker.js 源码常量，当前为 `true`** | 只控制 `scheduled()` 自动提交；修改需编辑源码并重新部署，设置同名环境变量无效 |
+| `REPO`、`GITHUB_API`、`SCHEDULE_URL`、窗口和 TTL | worker.js 源码常量 | Fork 必须核对目标仓库；当前 API 使用 `ref: main` |
 
-不要把真实 PAT、测试密钥、`SESSION`、教务密码放进 README、源码、URL 查询参数、公开日志或截图。Cloudflare 只需调度令牌和测试密钥，雨课堂 `SESSION` 等业务凭据仍留在 GitHub Actions Secrets。日志只记录脱敏的匹配结果、KV 状态及 HTTP 状态码；令牌泄露应撤销并重新配置，过期后也需更新。
+当前源码不读取任何普通环境变量，因此示例 `vars` 为空；不将 Secrets 伪装成普通变量。`/test` 无论 `AUTO_DISPATCH` 如何设置都会发起真实 dispatch，且不查课表、不读写 KV。`/preview` 无论该常量如何设置，都只演练，但会真实 GET 课表并读取 KV；两项 Secrets 和 KV 都需要配置。健康检查 `GET /` 只证明 HTTP 入口可响应，不会验证这些依赖。
+
+不要将真实 PAT、测试密钥、`SESSION`、教务密码放进源码、README、URL 查询参数、日志或截图。Worker 不需要雨课堂 `SESSION`；业务凭据保留在 GitHub Actions Secrets。最小权限、Secret 设置及凭据轮换见部署指南。
 
 ### Cron 时区、触发窗口与去重语义
 
 Cloudflare Cron 使用 **UTC**，课表匹配使用**北京时间 UTC+8**，日期也必须按北京时间计算。`*/5 * * * *` 在两种时区都表现为每 5 分钟一次；若设置固定时间，北京时间 08:00 对应 UTC 当天 00:00，北京时间 02:00 对应 UTC 前一天 18:00。因此课表刷新工作流的 `0 18 * * *` 表示北京时间次日 02:00，并非北京时间 18:00。
 
-现有 Worker 在课程开始后的 15 分钟触发窗口内允许补触发；例如 08:00 开始的课程，08:05、08:10 仍可匹配，具体 08:15 端点是否包含以部署源码和 `/preview` 边界测试为准，不应依赖最后一个边界时刻。超过窗口不会补触发，连续调度失败或延迟可能错过整个窗口。
+Worker 使用北京时间的日期和分钟，触发窗口为 `[开始时间, 开始时间 + 15 分钟)`，同时要求当前时间早于课程结束时间。08:00 开始的课程在 08:00、08:05、08:14 可匹配，08:15 不匹配；若课程 08:10 已结束，08:10 起也不匹配。超过窗口不会补触发，连续调度失败或延迟可能错过整个窗口。
 
 同一天相同开课时间合并为一次 dispatch，例如 KV 键 `rainclassroom:2026-10-20:08:00`，不按课程名称分别启动。GitHub 接受请求后保存记录，TTL 为 14 天（1,209,600 秒）。该记录表示**已提交且 GitHub 接受触发请求**，并不表示 Runner 已启动或签到答题成功；后续任务失败也不能指望同一记录自动重试。
 
@@ -95,12 +102,14 @@ User-Agent: rainclassroom-scheduler
 
 正常接受 dispatch 时 GitHub 通常返回 **HTTP 204**；现有 `POST /test` 在联调中返回 **Worker HTTP 200**，且 Actions 确实启动并执行。这两个状态码来自不同层级，仅代表请求接收结果，不代表签到答题完成。
 
-- **`POST /preview`：** 通过 `TEST_TRIGGER_KEY` 鉴权，输入模拟北京时间，检查日期、开课时间和触发窗口匹配；不实际 dispatch，也不写入课程触发记录。请求字段与鉴权位置须查阅现有 Worker 源码。测试课前、窗口内、窗口外、同一天同一开课时间多条记录以及北京时间跨日边界。
-- **`POST /test`：** 通过同一测试密钥鉴权，发起真实 `workflow_dispatch`。不要把打开浏览器 GET 页面当作测试成功，也不要假定它会绕过或修改课程 KV 记录，具体行为以部署源码为准。它可以在无课时启动 Actions，而 Python 此时可能只做单次查课。
+- **`POST /preview`：** 使用 `Authorization: Bearer <TEST_TRIGGER_KEY>`，JSON 为 `{"at":"2026-10-20T08:00"}`，`at` 表示北京时间，不带时区后缀。返回 `dispatchEnabled: false`，时段状态可能为 `would_dispatch` 或 `already_dispatched`，无匹配时 `results` 为空。不 dispatch、不写课程记录，但读取真实课表和 KV。
+- **`POST /test`：** 使用同样的鉴权，不要求请求体；每次直接 dispatch，无课表 / KV 去重。无课时 Actions 也可能只做单次查课。真实调用应由部署者主动确认后执行。
+
+可复制的 curl 示例见 [接口验证](cloudflare/README.md#接口验证)，勿将 GitHub PAT 当作接口的测试密钥。
 
 ### 验证状态与验收步骤
 
-截至 2026-10-19，仓库触发器与 Python 行为已按最新代码核对；下表中的 Cloudflare 结果来自用户联调反馈，未由本仓库的自动测试覆盖。
+截至 2026-10-19，仓库触发器与 Python 行为已按最新代码核对；下表中的线上 Cloudflare 结果来自用户联调反馈。新增离线测试验证源码行为，不能代替真实课程验收。
 
 | 项目 | 当前证据与边界 |
 | --- | --- |
@@ -110,12 +119,13 @@ User-Agent: rainclassroom-scheduler
 | 受密钥保护的 `POST /test` | 返回 200，GitHub dispatch 实际启动并执行成功 |
 | `AUTO_DISPATCH` 正式开关 | 用户表示 `true` 已部署，仍需真实课程窗口验收 |
 | 真实课程窗口的 Cron → Actions → 持续监听 | 待实测，不能用手动接口结果替代 |
-| 并发去重、长期稳定性、实际签到答题结果 | 尚未充分验证，需单独观察业务日志 |
+| 并发去重、长期稳定性、实际签到答题结果 | 线上尚未充分验证；离线已复现 KV 并发竞态和失败后的重复提交风险 |
+| 源码与本地验证 | 附件源码逐字节一致；JavaScript 语法、Wrangler 配置 / dry-run 和离线测试通过，详见部署指南 |
 
 建议按以下层次验收，并分别记录时间与结果：
 
 1. 检查 `main` 的 JSON 日期、课程名称、起止时间、当前学期及 Actions 的课程筛选配置。以实际 `classes` 为准，不根据课程名称元数据猜测哪天有课。
-2. 使用现有接口约定调用受保护的 `POST /preview`，确认模拟时间匹配正确，Actions 没有新 run，课程 KV 没有新增记录。
+2. 按上述接口约定调用受保护的 `POST /preview`，确认模拟时间匹配正确，Actions 没有新 run，课程 KV 没有新增记录。
 3. 主动调用一次受保护的 `POST /test`，检查 Worker 状态码及 GitHub Actions 新 run 的事件类型、分支、开始时间和步骤结果。无课时的“手动单次检查课程 / 无课”只能证明执行链路可达。
 4. 正式课前确认开关与 Cron 配置。课时到来后记录 Worker Cron 时间、匹配结果、API 接收结果及 KV 键，再核对 Actions 创建、Runner 开始、依赖安装结束和进入监听窗口的时间。下一次 Cron 检查同一键是否跳过，并核对该时段是否出现重复 run。
 5. 最后查实际课堂日志中的签到、监听和答题结果；只显示任务绿色或 KV 有键不算业务验收。多次观察后才能评估稳定性，一次正常跳过也不足以证明无并发竞态。
@@ -125,14 +135,16 @@ User-Agent: rainclassroom-scheduler
 | 现象 | 检查方向 |
 | --- | --- |
 | Cron 没有日志 | 确认已部署、Trigger 存在且属于正确环境，检查配置传播和 Worker 运行错误；HTTP 测试不能代替 `scheduled()` 验证 |
-| 有 Cron 日志但不触发 | 核对 `AUTO_DISPATCH` 解析、Raw URL / main、HTTP 与 JSON 格式、北京时间日期、15 分钟窗口和现有 KV 键；检查课表是否仍是旧学期或未更新筛选名单 |
-| `/preview` 或 `/test` 拒绝请求 | 确认使用 POST、已部署的测试密钥、源码要求的请求字段及鉴权位置；不要在日志中打印密钥 |
+| 有 Cron 日志但不触发 | 核对源码常量 `AUTO_DISPATCH`、Raw URL / main、HTTP 与 JSON 格式、北京时间日期、15 分钟窗口和现有 KV 键；检查课表是否仍是旧学期或未更新筛选名单 |
+| `/preview` 或 `/test` 拒绝请求 | 确认使用 POST、`Authorization: Bearer`、已部署的测试密钥及 `/preview` 的 `at` 字段；不要在日志中打印密钥 |
 | GitHub API 401 / 403 / 404 / 422 | 检查 PAT 是否过期、授权仓库及 Actions 写权限、组织审批或限流、路径与工作流文件名、Actions 是否启用，以及 `ref: main` 是否存在；按脱敏响应判断具体原因 |
 | Worker 报成功但没看到执行 | 核对 API 真正接受的状态与目标仓库，查看 Actions 排队、并发组、运行记录及取消状态；KV 记录不保证后续成功，也不提供自动业务重试 |
 | 重复启动 | 检查是否额外手动触发、存在多个 Worker / Cron，以及 KV 最终一致性、先读后写竞态或写入失败；核对键是否按同一天相同开课时间合并 |
 | 只单次查课，未持续监听 | 核对实际启动时是否仍在窗口内、两项教务 Secrets、`FILTERED_COURSES`、课表学期及 `LISTEN_WINDOWS`；dispatch 不会强制 Python 忽略监听窗口 |
 | 雨课堂 401 / 403 或提示登录失效 | 更新 Actions 的 `SESSION` 后重试；也可能是接口或服务变化。调度器不能修复登录状态；服务器用户更新本地凭据 |
 | 临时调课未体现 | 同一学期、相同筛选名单会跳过教务登录，即使手动运行刷新也不会强制重新抓取；核对教务实际安排并自行更新课表，不能把每日工作流当作每日全量同步 |
+
+代码检查还发现课表逐条字段校验不足、请求无应用层超时、预览日期可能被 JavaScript 归一化等限制。本次保留原始行为，风险等级、复现条件及后续建议见 [已知限制与审查](cloudflare/README.md#已知限制与审查)。
 
 GitHub 失败通知需在账号通知设置中启用并自行确认；当前监听 YAML 的邮件环境变量处于注释状态，不能认为项目内邮件提醒已配置。
 

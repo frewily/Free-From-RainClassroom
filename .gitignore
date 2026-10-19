@@ -166,3 +166,12 @@ cython_debug/
 
 # Personal attendance records; keep locally, never commit to the public repository.
 log.json
+
+# Cloudflare local config, credentials, and generated files.
+cloudflare/wrangler.jsonc
+cloudflare/.dev.vars
+cloudflare/.dev.vars.*
+cloudflare/.env*
+cloudflare/.wrangler/
+cloudflare/node_modules/
+cloudflare/dist/
