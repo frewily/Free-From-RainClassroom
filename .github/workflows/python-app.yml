@@ -2,7 +2,6 @@ name: Listen during configured weekly windows
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # 固定尝试启动；实际窗口由 LISTEN_WINDOWS 决定
   workflow_dispatch:  # 允许手动触发
 
 permissions:
