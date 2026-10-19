@@ -1,7 +1,6 @@
 name: Listen during configured weekly windows
 
 on:
-  schedule:
   workflow_dispatch:  # 允许手动触发
 
 permissions:
