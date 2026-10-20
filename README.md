@@ -1,9 +1,11 @@
 # 长江雨课堂定时签到+听课答题
-本项目通过 Python 检查正在进行的课堂、签到，并按课程筛选配置监听和处理题目。云端采用 Cloudflare Workers 按课表调度、GitHub Actions 执行；也支持本地 / 服务器运行，以及可选的合工大课表同步和 Android 日历提醒。
+本项目通过 Python 检查正在进行的课堂、签到，并按课程筛选配置监听和处理题目。云端采用 Cloudflare Workers 按课表调度、GitHub Actions 执行；也支持本地 / 服务器运行，以及可选的合工大课表同步和 Android 日历提醒。（本项目针对合工大的课表进行了适配，支持爬取合工大的课表并筛选需要签到的课程名称和日期时间，非合工大也同样可以使用本项目，需要爬取其他学校的课表就尝试自行问问 ai 如何实现吧）
 
 当前默认适配长江雨课堂。其他雨课堂站点的域名、接口和认证方式需自行核对，不能保证只替换 HOST 就能使用。
 
 ## 方法1：Cloudflare Workers + GitHub Actions（推荐的云端调度方式）
+
+完全免费且全自动化，但配置流程较复杂，没用过 Cloudflare 的话建议在 ai 指导下配置。
 
 ### 架构与运行方式
 
@@ -26,7 +28,7 @@ Cloudflare Cron Triggers：*/5 * * * *
 
 | 工作流 | 当前触发器 | 职责 |
 | --- | --- | --- |
-| [python-app.yml](.github/workflows/python-app.yml) | 仅 `workflow_dispatch`；已移除 GitHub `schedule` | 监听执行，可由 Worker API 或 Actions 页面手动启动 |
+| [python-app.yml](.github/workflows/python-app.yml) | `workflow_dispatch`| 监听执行，可由 Worker API 或 Actions 页面手动启动 |
 | [course-schedule.yml](.github/workflows/course-schedule.yml) | GitHub `schedule: 0 18 * * *` 和 `workflow_dispatch` | 可选的合工大课表刷新及 ICS 日历生成 |
 
 Cloudflare 每 5 分钟检查一次是否需要**启动任务**；`start.py` 在监听时段内每约 5 分钟**检查课堂**，这是两个独立的周期。进入时段后运行到该时段结束，同一轮不会重复处理同一课堂。当前监听工作流所有调用都属于 `workflow_dispatch`，时段外也会安装依赖并执行一次查课；时段判断格式无效等错误仍会导致任务失败。没有配置外部调度器时，该监听工作流不会自行定时启动。
@@ -196,6 +198,9 @@ https://raw.githubusercontent.com/<用户名>/<仓库名>/main/data/course_sched
 同步后，在手机日历 App 中开启该日历的显示与通知权限，检查事件是否有“提前 10 分钟”提醒；部分日历 App 会忽略订阅文件中的提醒，需要在 App 内为该日历设置默认提醒。允许 ICSx⁵ 后台同步，并关闭针对它和日历 App 的严格省电限制。首次订阅或新学期更新可能需要等待同步，建议先核对一节近期课程的时间和提醒。即使 GitHub Actions 后续漏跑，已同步到手机的课程仍会按本地时间提醒。
 
 ## 方法2：本地 / 服务器部署
+
+走本地方法的话建议
+
 ### 🌟 说明
 
 可用系统定时任务或宝塔面板调用 `start.py`，自行监控任务、网络和登录状态。服务器调度更可控，但仍需维护；`SESSION` 过期不会由调度器自动恢复。
@@ -238,3 +243,5 @@ GitHub Actions 用户将值保存为仓库 Secret `SESSION`；本地 / 服务器
 
 ## [获取AI_KEY(AI 用于解题或辅助题库搜题规格化答案)](https://api.chatanywhere.org/v1/oauth/free/render)
 ## [获取ENNCY_KEY(言溪题库 用于题目为空时搜题)](https://tk.enncy.cn/)
+
+本项目基于开源项目[Fuck-Yangtze-RainClassroom](https://github.com/Chiu-xaH/Fuck-Yangtze-RainClassroom)进行改进，感谢原作者的开源贡献！如果觉得本项目配置复杂，也可以尝试原项目的方法配置。
