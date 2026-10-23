@@ -24,12 +24,13 @@ Cloudflare Cron Triggers：*/5 * * * *
   → Python 再次判断监听窗口，查课、签到并按课程筛选进入监听
 ```
 
-**两个工作流的触发方式不同：**
+**工作流的触发方式不同：**
 
 | 工作流 | 当前触发器 | 职责 |
 | --- | --- | --- |
 | [python-app.yml](.github/workflows/python-app.yml) | `workflow_dispatch`| 监听执行，可由 Worker API 或 Actions 页面手动启动 |
 | [course-schedule.yml](.github/workflows/course-schedule.yml) | GitHub `schedule: 0 18 * * *` 和 `workflow_dispatch` | 可选的合工大课表刷新及 ICS 日历生成 |
+| [offline-tests.yml](.github/workflows/offline-tests.yml) | `push` 和 `pull_request` | 独立运行 Python / Worker 离线测试，不触发课堂或邮件业务 |
 
 Cloudflare 每 5 分钟检查一次是否需要**启动任务**；`start.py` 在监听时段内每约 5 分钟**检查课堂**，这是两个独立的周期。进入时段后运行到该时段结束，同一轮不会重复处理同一课堂。当前监听工作流所有调用都属于 `workflow_dispatch`，时段外也会安装依赖并执行一次查课；时段判断格式无效等错误仍会导致任务失败。没有配置外部调度器时，该监听工作流不会自行定时启动。
 
@@ -275,3 +276,21 @@ GitHub Actions 用户将值保存为仓库 Secret `SESSION`；本地 / 服务器
 ## [获取ENNCY_KEY(言溪题库 用于题目为空时搜题)](https://tk.enncy.cn/)
 
 本项目基于开源项目[Fuck-Yangtze-RainClassroom](https://github.com/Chiu-xaH/Fuck-Yangtze-RainClassroom)进行改进，感谢原作者的开源贡献！如果觉得本项目配置复杂，也可以尝试原项目的方法配置。
+
+## 开发验证：离线自动化测试
+
+推送代码或创建、更新 PR 后，`Offline tests` 会分别运行 Python 3.10、Python 3.14 和 Node.js 24 的测试。Python 3.10 与当前监听工作流一致；两个 Python 版本分别报告结果，不因其中一个失败而取消另一个。
+
+测试流程只授予仓库读取权限，检出代码时不保留 Git 凭据，不引用仓库 Secrets。Python 使用虚构的测试 SESSION；课堂、SMTP、模型、Worker HTTP 和 KV 操作由现有测试替身处理。流程仅执行测试命令，不运行监听、课表更新或部署命令，也不会触发真实 Worker `/test`。
+
+Python 仅安装 [`requirements-test.txt`](requirements-test.txt) 中的三个基础依赖，不安装整套生产依赖或加载 OCR 模型。该清单固定直接测试依赖版本，未锁定所有传递依赖，也不代表生产环境兼容性已验证；生产的 `requirements.txt` 保持独立。
+
+在独立的本地测试环境中，可从仓库根目录执行：
+
+```sh
+python -m pip install -r requirements-test.txt
+python -B -m unittest discover -s tests -v
+node --test cloudflare/worker.test.mjs
+```
+
+任一测试失败都会使对应检查失败；若需要禁止合并失败的 PR，还需由仓库维护者将这些检查设为分支保护的必需检查。离线测试通过不等于真实课堂、邮件投递、模型依赖启动或线上 Worker 已验证。
