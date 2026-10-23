@@ -45,7 +45,8 @@ def get_listening():
 
 # 获取正在进行的课堂并且签到、写日志 新的签到方法
 def get_listening_classes_and_sign(filtered_courses: list, seen_lesson_ids=None,
-                                   window_stop_event=None, quiet_when_empty=False):
+                                   window_stop_event=None, quiet_when_empty=False,
+                                   supervisor=None):
     response = get_listening()
     name = None
 
@@ -121,7 +122,8 @@ def get_listening_classes_and_sign(filtered_courses: list, seen_lesson_ids=None,
                         seen_lesson_ids.add(lesson_id)
                 else:
                     print("签到失败，HTTP", response_sign.status_code)
-            return start_all_sockets(on_lesson_list, window_stop_event=window_stop_event)
+            return start_all_sockets(on_lesson_list, window_stop_event=window_stop_event,
+                                     supervisor=supervisor)
 
 
 # 获取正在进行的考试

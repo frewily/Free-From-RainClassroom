@@ -1,7 +1,5 @@
 import os
 import sys
-import threading
-import time
 from datetime import datetime
 
 import requests
@@ -9,6 +7,7 @@ import requests
 from config import filtered_courses
 from function.course_schedule import current_monitor_window
 from function.check_in import SessionError, get_listening_classes_and_sign
+from function.listener_supervisor import ListenerError, ListenerSupervisor
 from function.listen_window import CHINA_TIME
 
 
@@ -16,51 +15,57 @@ CHECK_INTERVAL_SECONDS = 300
 
 
 def main():
+    supervisor = ListenerSupervisor()
+    try:
+        run_listening(supervisor)
+    finally:
+        supervisor.stop_and_join()
+    # Also catch a listener that failed while the main thread was shutting down.
+    supervisor.raise_if_failed()
+
+
+def run_listening(supervisor):
     window_end = current_monitor_window(filtered_courses)
     if window_end is None:
         if os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch" or not os.getenv("GITHUB_ACTIONS"):
             print("手动单次检查课程", flush=True)
-            listeners = get_listening_classes_and_sign(filtered_courses) or []
-            # Keep the main thread alive while listener/email threads run, rather
-            # than relying on Python's interpreter-shutdown thread join.
-            for listener in listeners:
-                listener.join()
+            get_listening_classes_and_sign(
+                filtered_courses, window_stop_event=supervisor.stop_event,
+                supervisor=supervisor,
+            )
+            supervisor.wait_until_done()
         else:
             print("当前不在监听窗口，退出", flush=True)
         return
 
     print("进入配置的监听窗口", flush=True)
     seen_lesson_ids = set()
-    window_stop_event = threading.Event()
-    listener_threads = []
-    try:
-        while datetime.now(CHINA_TIME) < window_end:
-            try:
-                listener_threads.extend(get_listening_classes_and_sign(
-                    filtered_courses,
-                    seen_lesson_ids=seen_lesson_ids,
-                    window_stop_event=window_stop_event,
-                    quiet_when_empty=True,
-                ) or [])
-            except requests.RequestException as error:
-                print(f"检查课程暂时失败: {type(error).__name__}", flush=True)
+    while datetime.now(CHINA_TIME) < window_end:
+        supervisor.raise_if_failed()
+        try:
+            get_listening_classes_and_sign(
+                filtered_courses,
+                seen_lesson_ids=seen_lesson_ids,
+                window_stop_event=supervisor.stop_event,
+                quiet_when_empty=True,
+                supervisor=supervisor,
+            )
+        except requests.RequestException as error:
+            print(f"检查课程暂时失败: {type(error).__name__}", flush=True)
 
-            remaining = (window_end - datetime.now(CHINA_TIME)).total_seconds()
-            if remaining <= 0:
-                break
-            window_stop_event.wait(min(CHECK_INTERVAL_SECONDS, remaining))
-    finally:
-        window_stop_event.set()
-        deadline = time.monotonic() + 5
-        for thread in listener_threads:
-            thread.join(timeout=max(0, deadline - time.monotonic()))
-        print("监听窗口结束，已停止本次检查", flush=True)
+        supervisor.raise_if_failed()
+        remaining = (window_end - datetime.now(CHINA_TIME)).total_seconds()
+        if remaining <= 0:
+            break
+        supervisor.stop_event.wait(min(CHECK_INTERVAL_SECONDS, remaining))
+        supervisor.raise_if_failed()
+    print("监听时间窗结束，开始收尾", flush=True)
 
 
 def run():
     try:
         main()
-    except SessionError as error:
+    except (SessionError, ListenerError) as error:
         print(f"运行停止：{error}", file=sys.stderr, flush=True)
         raise SystemExit(1) from None
 

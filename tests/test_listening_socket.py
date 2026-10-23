@@ -121,6 +121,43 @@ class ListeningSocketTests(unittest.TestCase):
         self.assertIn("更新 SESSION Secret", stderr.getvalue())
         self.assertNotIn("Traceback", stderr.getvalue())
 
+    def test_listener_crash_fails_manual_and_window_runs_without_private_traceback(self):
+        import start
+        from function import check_in
+        from function.listen_window import CHINA_TIME
+
+        lesson = {"lessonId": 123, "courseName": "test course"}
+        response = types.SimpleNamespace(
+            status_code=200, headers={"Set-Auth": "private-ppt"},
+            json=lambda: {"data": {"lessonToken": "private-socket", "identityId": 456}},
+        )
+
+        for windowed in (False, True):
+            with self.subTest(windowed=windowed):
+                ending = datetime.now(CHINA_TIME) + timedelta(seconds=0.1) if windowed else None
+                stdout, stderr = io.StringIO(), io.StringIO()
+                with mock.patch.dict(os.environ, {"GITHUB_EVENT_NAME": "workflow_dispatch"}), \
+                        mock.patch.object(start, "current_monitor_window", return_value=ending), \
+                        mock.patch.object(start, "CHECK_INTERVAL_SECONDS", 0.01), \
+                        mock.patch.object(start, "filtered_courses", []), \
+                        mock.patch.object(check_in, "get_listening", return_value={"onLessonClassrooms": [lesson]}), \
+                        mock.patch.object(check_in, "check_in_on_listening", return_value=response), \
+                        mock.patch.object(check_in, "get_user_name", return_value="test user"), \
+                        mock.patch.object(check_in, "write_log"), \
+                        mock.patch.object(listening_socket, "start_socket_ppt",
+                                          side_effect=RuntimeError("private-token")) as listener, \
+                        mock.patch.object(threading, "excepthook") as uncaught, \
+                        contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                    with self.assertRaises(SystemExit) as caught:
+                        start.run()
+                self.assertEqual(1, caught.exception.code)
+                listener.assert_called_once()
+                uncaught.assert_not_called()
+                self.assertIn("123", stderr.getvalue())
+                self.assertIn("RuntimeError", stderr.getvalue())
+                self.assertNotIn("private-token", stdout.getvalue() + stderr.getvalue())
+                self.assertNotIn("Traceback", stderr.getvalue())
+
     def test_configured_window_checks_repeatedly_then_stops(self):
         import start
         from function.listen_window import CHINA_TIME
@@ -145,7 +182,7 @@ class ListeningSocketTests(unittest.TestCase):
             "GITHUB_ACTIONS": "true",
         }), mock.patch.object(start, "current_monitor_window", return_value=ending), \
                 mock.patch.object(start, "datetime") as fake_datetime, \
-                mock.patch.object(start.threading, "Event", return_value=fake_stop), \
+                mock.patch("function.listener_supervisor.threading.Event", return_value=fake_stop), \
                 mock.patch.object(start, "get_listening_classes_and_sign",
                                   side_effect=lambda *_args, **_kwargs: checks.append(1) or []):
             fake_datetime.now.side_effect = [
@@ -157,15 +194,99 @@ class ListeningSocketTests(unittest.TestCase):
         self.assertEqual(2, len(checks))
         self.assertTrue(fake_stop.stopped)
 
+    def test_listener_failure_interrupts_five_minute_check_wait(self):
+        import start
+        from function.listener_supervisor import ListenerSupervisor
+        from function.listen_window import CHINA_TIME
+
+        supervisor = ListenerSupervisor()
+        waiting = threading.Event()
+        original_wait = supervisor.stop_event.wait
+
+        def fail_while_main_waits():
+            waiting.wait(2)
+            raise RuntimeError("private-token")
+
+        def discover(_courses, **_kwargs):
+            return [supervisor.start(fail_while_main_waits, lesson_id=123, kwargs={})]
+
+        def observe_wait(seconds):
+            self.assertEqual(300, seconds)
+            waiting.set()
+            # Cap the test wait so a regression fails instead of hanging for five minutes.
+            self.assertTrue(original_wait(1), "listener failure did not wake the main thread")
+            return True
+
+        ending = datetime.now(CHINA_TIME) + timedelta(minutes=10)
+        with mock.patch.object(start, "ListenerSupervisor", return_value=supervisor), \
+                mock.patch.object(start, "current_monitor_window", return_value=ending), \
+                mock.patch.object(start, "get_listening_classes_and_sign", side_effect=discover) as checks, \
+                mock.patch.object(supervisor.stop_event, "wait", side_effect=observe_wait), \
+                contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as caught:
+                start.run()
+        self.assertEqual(1, caught.exception.code)
+        checks.assert_called_once()
+
+    def test_failure_during_main_cleanup_still_exits_nonzero(self):
+        import start
+
+        def start_listener(supervisor):
+            def fail_on_stop():
+                supervisor.stop_event.wait(2)
+                raise RuntimeError("private-token")
+
+            supervisor.start(fail_on_stop, lesson_id=123, kwargs={})
+
+        stderr = io.StringIO()
+        with mock.patch.object(start, "run_listening", side_effect=start_listener), \
+                contextlib.redirect_stderr(stderr):
+            with self.assertRaises(SystemExit) as caught:
+                start.run()
+        self.assertEqual(1, caught.exception.code)
+        self.assertIn("RuntimeError", stderr.getvalue())
+        self.assertNotIn("private-token", stderr.getvalue())
+
     def test_manual_single_check_waits_for_listener_and_end_notification(self):
         import start
 
-        listener = mock.Mock()
+        started = threading.Event()
+        release = threading.Event()
+        end_notification = threading.Event()
+        finished = threading.Event()
+        errors = []
+
+        def listener():
+            started.set()
+            release.wait(2)
+            end_notification.set()
+
+        def discover(_courses, **kwargs):
+            return [kwargs["supervisor"].start(listener, lesson_id=123, kwargs={})]
+
+        def run_main():
+            try:
+                start.main()
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                finished.set()
+
         with mock.patch.dict(os.environ, {"GITHUB_EVENT_NAME": "workflow_dispatch"}), \
                 mock.patch.object(start, "current_monitor_window", return_value=None), \
-                mock.patch.object(start, "get_listening_classes_and_sign", return_value=[listener]):
-            start.main()
-        listener.join.assert_called_once_with()
+                mock.patch.object(start, "get_listening_classes_and_sign", side_effect=discover):
+            main_thread = threading.Thread(target=run_main)
+            main_thread.start()
+            try:
+                self.assertTrue(started.wait(1))
+                self.assertFalse(finished.is_set())
+                release.set()
+                self.assertTrue(finished.wait(1))
+                self.assertTrue(end_notification.is_set())
+                self.assertEqual([], errors)
+            finally:
+                release.set()
+                main_thread.join(timeout=2)
 
     def test_window_end_closes_active_socket(self):
         ready = threading.Event()

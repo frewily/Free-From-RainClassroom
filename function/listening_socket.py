@@ -374,22 +374,25 @@ def _listen_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_
 
 
 # 多线程 多个上课同时监听
-def start_all_sockets(on_lesson_list, window_stop_event=None):
+def start_all_sockets(on_lesson_list, window_stop_event=None, supervisor=None):
     threads = []
+    if supervisor is not None:
+        window_stop_event = supervisor.stop_event
 
     for item in on_lesson_list:
-        t = threading.Thread(
-            target=start_socket_ppt,
-            kwargs={
-                "ppt_jwt": item["ppt_jwt"],
-                "socket_jwt": item["socket_jwt"],
-                "lesson_id": item["lesson_id"],
-                "identity_id": item["identity_id"],
-                "window_stop_event": window_stop_event,
-                "course_name": item.get("course_name", "未命名课程"),
-            }
-        )
-        t.start()
+        kwargs = {
+            "ppt_jwt": item["ppt_jwt"],
+            "socket_jwt": item["socket_jwt"],
+            "lesson_id": item["lesson_id"],
+            "identity_id": item["identity_id"],
+            "window_stop_event": window_stop_event,
+            "course_name": item.get("course_name", "未命名课程"),
+        }
+        if supervisor is not None:
+            t = supervisor.start(start_socket_ppt, lesson_id=item["lesson_id"], kwargs=kwargs)
+        else:
+            t = threading.Thread(target=start_socket_ppt, kwargs=kwargs)
+            t.start()
         threads.append(t)
 
     return threads
