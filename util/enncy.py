@@ -9,7 +9,7 @@ def search(q):
         "token": enncy_key,
         "q": q,
     }
-    response = requests.get(url="https://tk.enncy.cn/query", params=query_params)
+    response = requests.get(url="https://tk.enncy.cn/query", params=query_params, timeout=(5, 15))
     if response.status_code == 200:
         return response.text
     else:

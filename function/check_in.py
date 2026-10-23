@@ -177,7 +177,7 @@ def check_in_on_latest(check_num=1):
 
     name = get_user_name()
     # 检查收到消息
-    response = requests.post(host + api["get_received"], headers=headers, json=data)
+    response = requests.post(host + api["get_received"], headers=headers, json=data, timeout=(5, 15))
     if response.status_code == 200:
         response_data = response.json()
         # 提取 `data` 列表中的第一个元素信息

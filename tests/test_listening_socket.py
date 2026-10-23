@@ -545,6 +545,72 @@ class ListeningSocketTests(unittest.TestCase):
         self.assertIn("Timeout", messages[-1]["attachment_text"])
         self.assertNotIn("private error", messages[-1]["attachment_text"])
 
+    def test_submission_timeout_is_unknown_and_not_retried_after_reconnect(self):
+        from util.listening_report import ListeningReport
+
+        for error_type in (requests.ConnectTimeout, requests.ReadTimeout):
+            with self.subTest(error=error_type.__name__):
+                apps = []
+                messages = []
+                output = io.StringIO()
+                report = ListeningReport("示例课", 1, sender=lambda **mail: messages.append(mail))
+                response = types.SimpleNamespace(status_code=200, json=lambda: {"data": {"slides": [
+                    {"coverAlt": "", "problem": {"problemId": "q1", "problemType": 1,
+                     "body": "测试题", "options": [], "answers": []}}
+                ]}})
+                make_callback = listening_socket.on_message_connect
+
+                def immediate_callback(**kwargs):
+                    return make_callback(**kwargs, sleep_second=0)
+
+                class FakeWebSocketApp(FakeWebSocket):
+                    def __init__(self, **callbacks):
+                        super().__init__()
+                        self.callback = callbacks["on_message"]
+                        apps.append(self)
+
+                    def run_forever(self, **_options):
+                        for message in (
+                            {"op": "hello", "timeline": [{"type": "slide", "pres": "ppt"}]},
+                            {"op": "fetchtimeline", "unlockedproblem": ["q1"]},
+                        ):
+                            self.callback(self, json.dumps(message))
+                            self.callback.pending_messages.join()
+                        if len(apps) == 2:
+                            self.callback(self, json.dumps({"op": "lessonfinished"}))
+
+                with contextlib.redirect_stdout(output), \
+                        mock.patch.object(listening_socket, "headers", {}), \
+                        mock.patch.object(listening_socket, "create_listening_report", return_value=report), \
+                        mock.patch.object(listening_socket, "on_message_connect", side_effect=immediate_callback), \
+                        mock.patch.object(listening_socket, "RECONNECT_DELAY_SECONDS", 0), \
+                        mock.patch.object(listening_socket.websocket, "WebSocketApp", FakeWebSocketApp), \
+                        mock.patch.object(listening_socket, "request_ai", return_value=["A"]) as ai, \
+                        mock.patch.object(requests, "get", return_value=response), \
+                        mock.patch.object(requests, "post", side_effect=error_type("private-token")) as post:
+                    listening_socket.start_socket_ppt("ppt", "socket", "lesson", "user")
+
+                self.assertEqual(2, len(apps))
+                post.assert_called_once()
+                ai.assert_called_once()
+                self.assertEqual((5, 15), post.call_args.kwargs.get("timeout"))
+                attachment = messages[-1]["attachment_text"]
+                self.assertIn("结果未知", attachment)
+                self.assertNotIn("答题成功", output.getvalue())
+                self.assertNotIn("private-token", output.getvalue() + attachment)
+
+    def test_legacy_course_request_timeout_does_not_proceed_to_sign_in(self):
+        from function import check_in
+
+        with mock.patch.object(check_in, "get_user_name", return_value="test user"), \
+                mock.patch.object(check_in.requests, "post", side_effect=requests.ReadTimeout("private-token")) as post, \
+                mock.patch.object(check_in, "check_in_on_listening") as sign_in:
+            with self.assertRaises(requests.ReadTimeout):
+                check_in.check_in_on_latest()
+        post.assert_called_once()
+        self.assertEqual((5, 15), post.call_args.kwargs.get("timeout"))
+        sign_in.assert_not_called()
+
     def test_report_callback_failure_still_queues_classroom_message(self):
         report = mock.Mock()
         report.mark_started.side_effect = RuntimeError("private error")

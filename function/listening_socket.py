@@ -14,6 +14,10 @@ PING_TIMEOUT_SECONDS = 10
 RECONNECT_DELAY_SECONDS = 5
 
 
+class SubmissionOutcomeUnknown(RuntimeError):
+    """A timed-out submission may already have been accepted by the server."""
+
+
 def send_if_connected(ws, payload):
     """Send a WebSocket payload only while the underlying connection is open."""
     sock = getattr(ws, "sock", None)
@@ -32,7 +36,8 @@ def send_if_connected(ws, payload):
 def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second=10,
                        stop_event=None, answered_problem_ids=None,
                        processing_problem_ids=None, seen_problem_ids=None,
-                       problem_state_lock=None, session_report=None):
+                       problem_state_lock=None, session_report=None,
+                       uncertain_problem_ids=None):
     problem_list = dict()
     if answered_problem_ids is None:
         answered_problem_ids = set()
@@ -40,6 +45,8 @@ def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second
         processing_problem_ids = set()
     if seen_problem_ids is None:
         seen_problem_ids = set()
+    if uncertain_problem_ids is None:
+        uncertain_problem_ids = set()
     if problem_state_lock is None:
         problem_state_lock = threading.Lock()
     processor_stop = threading.Event()
@@ -80,7 +87,8 @@ def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second
                     if problem is not None:
                         with problem_state_lock:
                             should_answer = (q_id not in answered_problem_ids
-                                             and q_id not in processing_problem_ids)
+                                             and q_id not in processing_problem_ids
+                                             and q_id not in uncertain_problem_ids)
                             if should_answer:
                                 processing_problem_ids.add(q_id)
                         if should_answer:
@@ -97,6 +105,11 @@ def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second
                                 if answered:
                                     with problem_state_lock:
                                         answered_problem_ids.add(q_id)
+                            except SubmissionOutcomeUnknown:
+                                # Keep listening, but do not repeat a possibly accepted POST.
+                                with problem_state_lock:
+                                    uncertain_problem_ids.add(q_id)
+                                print("提交请求超时，结果未知；本次课堂监听不再提交该题", flush=True)
                             finally:
                                 with problem_state_lock:
                                     processing_problem_ids.discard(q_id)
@@ -154,7 +167,8 @@ def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second
                             answered = list(ppt["problem"]["answers"])
                             with problem_state_lock:
                                 should_save = (question["problemId"] not in answered_problem_ids
-                                               and question["problemId"] not in processing_problem_ids)
+                                               and question["problemId"] not in processing_problem_ids
+                                               and question["problemId"] not in uncertain_problem_ids)
                             if len(answered) == 0 and should_save:
                                 # 保存
                                 save_dict = {
@@ -298,6 +312,7 @@ def _listen_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_
     answered_problem_ids = set()
     processing_problem_ids = set()
     seen_problem_ids = set()
+    uncertain_problem_ids = set()
     problem_state_lock = threading.Lock()
 
     while not stop_event.is_set() and not (
@@ -314,6 +329,7 @@ def _listen_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_
             seen_problem_ids=seen_problem_ids,
             problem_state_lock=problem_state_lock,
             session_report=report,
+            uncertain_problem_ids=uncertain_problem_ids,
         )
         ws = websocket.WebSocketApp(
             url=api["websocket"],
@@ -388,6 +404,10 @@ def answer(problem_id, problem_type, jwt, problem_content, options,img_url, repo
                          problem_content, options)
     try:
         return _answer(problem_id, problem_type, jwt, problem_content, options, img_url, report, record)
+    except SubmissionOutcomeUnknown:
+        report_call(report, "update_answer", record,
+                    status="提交请求超时，结果未知；本次课堂监听不再提交该题")
+        raise
     except Exception as error:
         report_call(report, "update_answer", record, status=f"处理异常：{type(error).__name__}")
         raise
@@ -409,7 +429,11 @@ def _answer(problem_id, problem_type, jwt, problem_content, options, img_url, re
     new_headers["User-Agent"] = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                                  "Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0")
 
-    response = requests.post(url=host + api["answer"], json=post_json, headers=new_headers)
+    try:
+        response = requests.post(url=host + api["answer"], json=post_json,
+                                 headers=new_headers, timeout=(5, 15))
+    except requests.Timeout:
+        raise SubmissionOutcomeUnknown("提交请求超时，结果未知") from None
     report_call(report, "update_answer", record,
                 status=f"提交接口返回 HTTP {response.status_code}（未核验评分）")
 

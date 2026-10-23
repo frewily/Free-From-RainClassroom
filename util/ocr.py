@@ -9,11 +9,14 @@ ocr = PaddleOCR(use_angle_cls=False, lang="ch")
 def ocr_form_url_image(url: str):
     """识别网络图片"""
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=(5, 15))
         response.raise_for_status()
         image_array = np.asarray(bytearray(response.content), dtype=np.uint8)
         img = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
         return get_ocr_result(ocr.ocr(img))
+    except requests.Timeout:
+        print("图片下载超时，停止本次处理", flush=True)
+        raise
     except Exception as e:
         print(f"下载或识别失败: {e}")
         return None
