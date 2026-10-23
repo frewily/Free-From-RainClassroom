@@ -18,13 +18,10 @@ os.environ.setdefault("SESSION", "test-session")
 def _install_optional_dependency_stubs():
     ai = types.ModuleType("util.ai")
     ai.request_ai = lambda **_kwargs: ""
-    notice = types.ModuleType("util.notice")
-    notice.email_notice = lambda **_kwargs: None
     timestamp = types.ModuleType("util.timestamp")
     timestamp.get_date_time = lambda: ""
     timestamp.get_now = lambda: "test-time"
     sys.modules.setdefault("util.ai", ai)
-    sys.modules.setdefault("util.notice", notice)
     sys.modules.setdefault("util.timestamp", timestamp)
 
 
@@ -47,6 +44,13 @@ class FakeWebSocket:
 
 
 class ListeningSocketTests(unittest.TestCase):
+    def setUp(self):
+        # Enable reports with a fake sender; tests must never reach real SMTP.
+        for target in ("util.listening_report.email_is_configured", "util.listening_report.send_email"):
+            patcher = mock.patch(target, return_value=True)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
     def test_valid_course_list_remains_usable(self):
         from function import check_in
 
@@ -153,18 +157,30 @@ class ListeningSocketTests(unittest.TestCase):
         self.assertEqual(2, len(checks))
         self.assertTrue(fake_stop.stopped)
 
+    def test_manual_single_check_waits_for_listener_and_end_notification(self):
+        import start
+
+        listener = mock.Mock()
+        with mock.patch.dict(os.environ, {"GITHUB_EVENT_NAME": "workflow_dispatch"}), \
+                mock.patch.object(start, "current_monitor_window", return_value=None), \
+                mock.patch.object(start, "get_listening_classes_and_sign", return_value=[listener]):
+            start.main()
+        listener.join.assert_called_once_with()
+
     def test_window_end_closes_active_socket(self):
         ready = threading.Event()
         window_stop = threading.Event()
         apps = []
 
         class FakeWebSocketApp(FakeWebSocket):
-            def __init__(self, **_callbacks):
+            def __init__(self, **callbacks):
                 super().__init__()
+                self.callbacks = callbacks
                 self.closed_event = threading.Event()
                 apps.append(self)
 
             def run_forever(self, **_options):
+                self.callbacks["on_message"](self, json.dumps({"op": "hello", "timeline": []}))
                 ready.set()
                 self.closed_event.wait(2)
 
@@ -172,7 +188,8 @@ class ListeningSocketTests(unittest.TestCase):
                 super().close()
                 self.closed_event.set()
 
-        with mock.patch.object(listening_socket.websocket, "WebSocketApp", FakeWebSocketApp):
+        with mock.patch.object(listening_socket.websocket, "WebSocketApp", FakeWebSocketApp), \
+                mock.patch("util.listening_report.send_email", return_value=True) as mail:
             listener = threading.Thread(
                 target=listening_socket.start_socket_ppt,
                 args=("ppt", "socket", "lesson", "user"),
@@ -190,6 +207,8 @@ class ListeningSocketTests(unittest.TestCase):
 
         self.assertEqual(1, len(apps))
         self.assertTrue(apps[0].closed)
+        self.assertEqual(2, mail.call_count)
+        self.assertIn("时间窗结束", mail.call_args.kwargs["content"])
 
     def test_repeated_checks_do_not_sign_in_same_lesson_twice(self):
         from function import check_in
@@ -437,6 +456,7 @@ class ListeningSocketTests(unittest.TestCase):
 
             def run_forever(self, **options):
                 self.run_options = options
+                self.callbacks["on_message"](self, json.dumps({"op": "hello", "timeline": []}))
                 if len(apps) == 2:
                     self.callbacks["on_message"](self, json.dumps({"op": "lessonfinished"}))
 
@@ -445,7 +465,8 @@ class ListeningSocketTests(unittest.TestCase):
         listening_socket.websocket.WebSocketApp = FakeWebSocketApp
         listening_socket.RECONNECT_DELAY_SECONDS = 0
         try:
-            listening_socket.start_socket_ppt("ppt", "socket", "lesson", "user")
+            with mock.patch("util.listening_report.send_email", return_value=True) as mail:
+                listening_socket.start_socket_ppt("ppt", "socket", "lesson", "user")
         finally:
             listening_socket.websocket.WebSocketApp = original_app
             listening_socket.RECONNECT_DELAY_SECONDS = original_delay
@@ -454,6 +475,107 @@ class ListeningSocketTests(unittest.TestCase):
         self.assertEqual(30, apps[0].run_options["ping_interval"])
         self.assertEqual(10, apps[0].run_options["ping_timeout"])
         self.assertTrue(apps[1].closed)
+        self.assertEqual(2, mail.call_count)
+        self.assertIn("lessonfinished", mail.call_args.kwargs["content"])
+
+    def test_answer_report_observes_existing_result_without_extra_requests(self):
+        from util.listening_report import ListeningReport
+
+        messages = []
+        report = ListeningReport("示例课", 1, sensitive_values=("private-jwt",),
+                                 sender=lambda **mail: messages.append(mail))
+        report.mark_started()
+        with mock.patch.object(listening_socket, "request_ai", return_value=["A"]) as ai, \
+                mock.patch.object(listening_socket.requests, "post", return_value=types.SimpleNamespace(status_code=200)) as post, \
+                mock.patch.object(listening_socket, "headers", {}):
+            self.assertTrue(listening_socket.answer("q1", 1, "private-jwt", "测试题", ["A", "B"], "", report=report))
+        report.finish("测试结束")
+        ai.assert_called_once()
+        post.assert_called_once()
+        attachment = messages[-1]["attachment_text"]
+        self.assertIn("测试题", attachment)
+        self.assertIn('["A"]', attachment)
+        self.assertIn("HTTP 200", attachment)
+        self.assertNotIn("private-jwt", attachment)
+
+    def test_connection_open_without_classroom_response_does_not_email(self):
+        class FakeWebSocketApp(FakeWebSocket):
+            def __init__(self, **callbacks):
+                super().__init__()
+                self.callbacks = callbacks
+
+            def run_forever(self, **_options):
+                self.callbacks["on_open"](self)
+                self.callbacks["on_message"](self, json.dumps({"op": "notification"}))
+                self.callbacks["on_message"](self, json.dumps({"op": "lessonfinished"}))
+
+        with mock.patch.object(listening_socket.websocket, "WebSocketApp", FakeWebSocketApp), \
+                mock.patch("util.listening_report.send_email") as mail:
+            listening_socket.start_socket_ppt("ppt", "socket", "lesson", "user")
+        mail.assert_not_called()
+
+    def test_listener_exception_sends_end_notice_with_sanitized_reason(self):
+        class FakeWebSocketApp(FakeWebSocket):
+            def __init__(self, **callbacks):
+                super().__init__()
+                self.callbacks = callbacks
+
+            def run_forever(self, **_options):
+                self.callbacks["on_message"](self, json.dumps({"op": "hello", "timeline": []}))
+                raise RuntimeError("private error details")
+
+        with mock.patch.object(listening_socket.websocket, "WebSocketApp", FakeWebSocketApp), \
+                mock.patch("util.listening_report.send_email", return_value=True) as mail:
+            with self.assertRaises(RuntimeError):
+                listening_socket.start_socket_ppt("ppt", "socket", "lesson", "user")
+        self.assertEqual(2, mail.call_count)
+        self.assertIn("异常退出：RuntimeError", mail.call_args.kwargs["content"])
+        self.assertNotIn("private error details", mail.call_args.kwargs["content"])
+
+    def test_answer_exception_is_recorded_without_exception_body(self):
+        from util.listening_report import ListeningReport
+
+        messages = []
+        report = ListeningReport("示例课", 1, sender=lambda **mail: messages.append(mail))
+        report.mark_started()
+        with mock.patch.object(listening_socket, "request_ai", side_effect=requests.Timeout("private error")):
+            with self.assertRaises(requests.Timeout):
+                listening_socket.answer("q1", 1, "jwt", "测试题", [], "", report=report)
+        report.finish("测试结束")
+        self.assertIn("Timeout", messages[-1]["attachment_text"])
+        self.assertNotIn("private error", messages[-1]["attachment_text"])
+
+    def test_report_callback_failure_still_queues_classroom_message(self):
+        report = mock.Mock()
+        report.mark_started.side_effect = RuntimeError("private error")
+        ws = FakeWebSocket()
+        callback = listening_socket.on_message_connect("ppt", "lesson", "user", "socket",
+                                                       session_report=report)
+        try:
+            callback(ws, json.dumps({"op": "hello", "timeline": []}))
+            callback.pending_messages.join()
+        finally:
+            callback.stop_processing()
+        self.assertEqual("fetchtimeline", json.loads(ws.sent[-1])["op"])
+
+    def test_report_logging_failure_does_not_skip_existing_answer(self):
+        report = mock.Mock()
+        report.begin_answer.side_effect = ValueError("private error")
+        report.update_answer.side_effect = ValueError("private error")
+        with mock.patch.object(listening_socket, "request_ai", return_value=["A"]) as ai, \
+                mock.patch.object(listening_socket.requests, "post", return_value=types.SimpleNamespace(status_code=200)) as post, \
+                mock.patch.object(listening_socket, "headers", {}):
+            self.assertTrue(listening_socket.answer("q1", 1, "jwt", "测试题", [], "", report=report))
+        ai.assert_called_once()
+        post.assert_called_once()
+
+    def test_report_finish_failure_preserves_original_listener_error(self):
+        report = mock.Mock()
+        report.finish.side_effect = RuntimeError("report error")
+        with mock.patch.object(listening_socket, "create_listening_report", return_value=report), \
+                mock.patch.object(listening_socket, "_listen_socket_ppt", side_effect=ValueError("listener error")):
+            with self.assertRaisesRegex(ValueError, "listener error"):
+                listening_socket.start_socket_ppt("ppt", "socket", "lesson", "user")
 
 
 if __name__ == "__main__":

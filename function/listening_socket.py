@@ -5,7 +5,7 @@ import requests
 import websocket
 import json
 from config import host, api, headers, question_type
-from util.notice import email_notice
+from util.listening_report import create_listening_report, report_call
 from util.ai import request_ai
 from util.timestamp import get_date_time
 
@@ -32,7 +32,7 @@ def send_if_connected(ws, payload):
 def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second=10,
                        stop_event=None, answered_problem_ids=None,
                        processing_problem_ids=None, seen_problem_ids=None,
-                       problem_state_lock=None):
+                       problem_state_lock=None, session_report=None):
     problem_list = dict()
     if answered_problem_ids is None:
         answered_problem_ids = set()
@@ -91,7 +91,8 @@ def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second
                                     problem_content=problem["content"],
                                     options=problem["options"],
                                     jwt=ppt_jwt,
-                                    img_url=problem["img_url"]
+                                    img_url=problem["img_url"],
+                                    report=session_report,
                                 )
                                 if answered:
                                     with problem_state_lock:
@@ -210,10 +211,14 @@ def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second
     # 保持 WebSocket 的接收回调空闲，以便及时读取心跳回应。
     worker = threading.Thread(target=process_queued_messages, daemon=True)
     worker.start()
+    if session_report is not None:
+        report_call(session_report, "track_processor", worker)
 
     def on_message(ws, message):
         if "lessonfinished" in message:
             print("下课了，停止监听", flush=True)
+            if session_report is not None:
+                report_call(session_report, "set_end_reason", "收到教师下课通知（lessonfinished）")
             if stop_event is not None:
                 stop_event.set()
             processor_stop.set()
@@ -229,6 +234,12 @@ def on_message_connect(ppt_jwt, lesson_id, identity_id, socket_jwt, sleep_second
             return
         if msg_json.get("op") == "notification" or stopped():
             return
+        if session_report is not None and (
+            isinstance(msg_json.get("timeline"), list)
+            or (msg_json.get("op") == "fetchtimeline"
+                and isinstance(msg_json.get("unlockedproblem"), list))
+        ):
+            report_call(session_report, "mark_started")
         messages.put((ws, msg_json))
 
     def stop_processing():
@@ -266,7 +277,22 @@ def on_open_connet(jwt, lesson_id, identity_id):
 
 
 # 监听上课
-def start_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_event=None):
+def start_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_event=None,
+                     course_name="未命名课程"):
+    report = create_listening_report(course_name, lesson_id, sensitive_values=(ppt_jwt, socket_jwt))
+    reason = "监听停止"
+    try:
+        _listen_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_event, report)
+        if window_stop_event is not None and window_stop_event.is_set():
+            reason = "监听时间窗结束或主程序停止"
+    except BaseException as error:
+        reason = f"监听异常退出：{type(error).__name__}"
+        raise
+    finally:
+        report_call(report, "finish", reason)
+
+
+def _listen_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_event, report):
     stop_event = threading.Event()
     reconnect_attempt = 0
     answered_problem_ids = set()
@@ -287,6 +313,7 @@ def start_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_ev
             processing_problem_ids=processing_problem_ids,
             seen_problem_ids=seen_problem_ids,
             problem_state_lock=problem_state_lock,
+            session_report=report,
         )
         ws = websocket.WebSocketApp(
             url=api["websocket"],
@@ -319,6 +346,7 @@ def start_socket_ppt(ppt_jwt, socket_jwt, lesson_id, identity_id, window_stop_ev
             break
 
         reconnect_attempt += 1
+        report_call(report, "note_reconnect")
         print(
             f"WebSocket 连接中断，{RECONNECT_DELAY_SECONDS} 秒后重连（第 {reconnect_attempt} 次）",
             flush=True,
@@ -342,6 +370,7 @@ def start_all_sockets(on_lesson_list, window_stop_event=None):
                 "lesson_id": item["lesson_id"],
                 "identity_id": item["identity_id"],
                 "window_stop_event": window_stop_event,
+                "course_name": item.get("course_name", "未命名课程"),
             }
         )
         t.start()
@@ -354,7 +383,17 @@ def start_all_sockets(on_lesson_list, window_stop_event=None):
 
 
 # 答题
-def answer(problem_id, problem_type, jwt, problem_content, options,img_url):
+def answer(problem_id, problem_type, jwt, problem_content, options,img_url, report=None):
+    record = report_call(report, "begin_answer", problem_id, question_type.get(problem_type, "未知题型"),
+                         problem_content, options)
+    try:
+        return _answer(problem_id, problem_type, jwt, problem_content, options, img_url, report, record)
+    except Exception as error:
+        report_call(report, "update_answer", record, status=f"处理异常：{type(error).__name__}")
+        raise
+
+
+def _answer(problem_id, problem_type, jwt, problem_content, options, img_url, report, record):
     print(question_type[problem_type], problem_content, options,img_url)
 
     post_json = {
@@ -363,6 +402,7 @@ def answer(problem_id, problem_type, jwt, problem_content, options,img_url):
         "dt": get_date_time(),
         "result": request_ai(type=question_type[problem_type], problem=problem_content, options=options,img_url=img_url)
     }
+    report_call(report, "update_answer", record, result=post_json["result"])
 
     new_headers = headers
     new_headers["Authorization"] = "Bearer " + jwt
@@ -370,12 +410,13 @@ def answer(problem_id, problem_type, jwt, problem_content, options,img_url):
                                  "Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0")
 
     response = requests.post(url=host + api["answer"], json=post_json, headers=new_headers)
+    report_call(report, "update_answer", record,
+                status=f"提交接口返回 HTTP {response.status_code}（未核验评分）")
 
     if response.status_code == 200:
         print("答题成功")
         return True
     else:
-        email_notice(content="答题失败，请手动前往雨课堂", subject="答题失败")
         print("答题失败")
         msg = response.json()["msg"]
         if msg == "LESSON_END":

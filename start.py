@@ -20,7 +20,11 @@ def main():
     if window_end is None:
         if os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch" or not os.getenv("GITHUB_ACTIONS"):
             print("手动单次检查课程", flush=True)
-            get_listening_classes_and_sign(filtered_courses)
+            listeners = get_listening_classes_and_sign(filtered_courses) or []
+            # Keep the main thread alive while listener/email threads run, rather
+            # than relying on Python's interpreter-shutdown thread join.
+            for listener in listeners:
+                listener.join()
         else:
             print("当前不在监听窗口，退出", flush=True)
         return

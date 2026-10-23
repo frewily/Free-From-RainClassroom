@@ -46,11 +46,12 @@ jobs:
         env:
             SESSION: ${{ secrets.SESSION }}
             LISTEN_WINDOWS: ${{ secrets.LISTEN_WINDOWS }}
-#            EMAIL_USER: ${{ secrets.EMAIL_USER }}
-#            EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-#            TO_EMAIL: ${{ secrets.TO_EMAIL }}
-#            EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-#            EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+            EMAIL_USER: ${{ secrets.EMAIL_USER }}
+            EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+            TO_EMAIL: ${{ secrets.TO_EMAIL }}
+            EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+            EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+            EMAIL_SECURITY: ${{ secrets.EMAIL_SECURITY }}
             AI_KEY: ${{ secrets.AI_KEY }}
             ENNCY_KEY: ${{ secrets.ENNCY_KEY }}
             FILTERED_COURSES: ${{ secrets.FILTERED_COURSES }}
