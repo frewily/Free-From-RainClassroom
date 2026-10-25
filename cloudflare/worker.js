@@ -23,6 +23,9 @@ const RECORD_TTL = 14 * 24 * 60 * 60;
 
 // HH:mm 转换为分钟
 function toMinutes(time) {
+  if (typeof time !== "string" || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time)) {
+    throw new Error("课表时间格式错误：需要 HH:mm，范围为 00:00–23:59");
+  }
   const [hour, minute] = time.split(":").map(Number);
   return hour * 60 + minute;
 }
@@ -83,6 +86,13 @@ async function getSchedule() {
 
   if (!Array.isArray(schedule.classes)) {
     throw new Error("课表格式错误：classes 不是数组");
+  }
+
+  // 先校验整份课表，避免发现坏数据前已经触发部分课程。
+  for (const course of schedule.classes) {
+    if (toMinutes(course?.start) >= toMinutes(course?.end)) {
+      throw new Error("课表时间无效：结束时间必须晚于开始时间");
+    }
   }
 
   return schedule;

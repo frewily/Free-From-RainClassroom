@@ -284,12 +284,31 @@ test("missing KV fails before reading schedule", async t => {
   assert.equal(h.calls.length, 0);
 });
 
-test("known limitation: malformed time strings can wrongly match a slot", async t => {
-  const h = harness(t, { classes: [course({ start: "bad", end: "bad" })] });
-  clock(t, "2026-10-20T00:00:00Z");
-  await worker.scheduled({}, h.env, {});
-  assert.equal(h.dispatches().length, 1);
-  assert.equal(h.writes[0].key, `rainclassroom:${DAY}:bad`);
+for (const invalid of [
+  { start: "bad", end: "bad" }, { start: "8:00" },
+  { start: "08:60" }, { start: "24:00" }, { start: "08:00\n" },
+  { start: null }, { start: 800 }, { end: undefined },
+  { end: "08:00" }, { end: "07:59" },
+  { date: "2026-10-21", start: "bad" },
+]) {
+  test(`invalid timetable time rejected before any dispatch: ${JSON.stringify(invalid)}`, async t => {
+    const h = harness(t, { classes: [course(), course(invalid)] });
+    clock(t, "2026-10-20T00:00:00Z");
+    await assert.rejects(worker.scheduled({}, h.env, {}), /课表.*时间/);
+    assert.equal(h.dispatches().length, 0);
+    assert.equal(h.reads.length, 0);
+    assert.equal(h.writes.length, 0);
+  });
+}
+
+test("preview reports invalid timetable time without exposing its contents", async t => {
+  const h = harness(t, { classes: [course({ end: "private-invalid-time" })] });
+  const response = await worker.fetch(request(), h.env);
+  assert.equal(response.status, 500);
+  assert.equal(h.dispatches().length, 0);
+  assert.equal(h.reads.length, 0);
+  assert.equal(h.writes.length, 0);
+  assert.ok(h.logs.every(line => !line.includes("private-invalid-time")));
 });
 
 test("known limitation: Worker does not filter selected_courses or semester", async t => {
