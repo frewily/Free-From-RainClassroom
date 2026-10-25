@@ -8,6 +8,9 @@ const GITHUB_API =
 const SCHEDULE_URL =
   `https://raw.githubusercontent.com/${REPO}/main/data/course_schedule.json`;
 
+// 下载课表的等待上限，覆盖响应及响应体读取
+const SCHEDULE_TIMEOUT_MS = 10_000;
+
 // 是否启用真正的自动触发
 // 先保持 false，验证通过后再改成 true
 const AUTO_DISPATCH = true;
@@ -71,18 +74,28 @@ async function triggerGitHub(env) {
 // ===== 获取课表 =====
 
 async function getSchedule() {
-  const response = await fetch(SCHEDULE_URL, {
-    headers: {
-      "Accept": "application/json",
-      "Cache-Control": "no-cache"
+  const signal = AbortSignal.timeout(SCHEDULE_TIMEOUT_MS);
+  let schedule;
+  try {
+    const response = await fetch(SCHEDULE_URL, {
+      signal,
+      headers: {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`获取课表失败：HTTP ${response.status}`);
     }
-  });
 
-  if (!response.ok) {
-    throw new Error(`获取课表失败：HTTP ${response.status}`);
+    schedule = await response.json();
+  } catch (error) {
+    if (signal.aborted) {
+      throw new Error(`获取课表超时（${SCHEDULE_TIMEOUT_MS / 1000} 秒）`);
+    }
+    throw error;
   }
-
-  const schedule = await response.json();
 
   if (!Array.isArray(schedule.classes)) {
     throw new Error("课表格式错误：classes 不是数组");

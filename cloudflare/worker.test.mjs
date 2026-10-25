@@ -39,6 +39,7 @@ function harness(t, options = {}) {
   t.mock.method(globalThis, "fetch", async (url, init) => {
     calls.push({ url, init });
     if (url === RAW) {
+      if (options.schedule) return options.schedule(init);
       if (options.scheduleError) throw new Error("mock schedule network failure");
       if (options.invalidJSON) return new Response("not JSON");
       return Response.json(options.payload ?? { classes: options.classes ?? [course()] }, {
@@ -283,6 +284,45 @@ test("missing KV fails before reading schedule", async t => {
   assert.equal((await worker.fetch(request(), h.env)).status, 500);
   assert.equal(h.calls.length, 0);
 });
+
+for (const phase of ["response", "body"]) {
+  for (const entry of ["cron", "preview"]) {
+    test(`schedule download timeout during ${phase} via ${entry}`, async t => {
+      const controller = new AbortController();
+      t.mock.method(AbortSignal, "timeout", milliseconds => {
+        assert.equal(milliseconds, 10_000);
+        return controller.signal;
+      });
+      let started;
+      const reading = new Promise(resolve => { started = resolve; });
+      const stalled = signal => {
+        started();
+        assert.ok(signal instanceof AbortSignal);
+        return new Promise((_, reject) => {
+          signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        });
+      };
+      const h = harness(t, { schedule: ({ signal }) => phase === "response"
+        ? stalled(signal) : { ok: true, json: () => stalled(signal) } });
+      const pending = entry === "cron"
+        ? worker.scheduled({}, h.env, {}) : worker.fetch(request(), h.env);
+      const checked = entry === "cron"
+        ? assert.rejects(pending, /获取课表超时/)
+        : pending.then(response => {
+          assert.equal(response.status, 500);
+          assert.match(h.logs.join("\n"), /获取课表超时/);
+        });
+      await reading;
+      controller.abort(new DOMException("private-timeout-detail", "TimeoutError"));
+      await checked;
+      assert.equal(h.calls.length, 1);
+      assert.equal(h.dispatches().length, 0);
+      assert.equal(h.reads.length, 0);
+      assert.equal(h.writes.length, 0);
+      assert.ok(h.logs.every(line => !line.includes("private-timeout-detail")));
+    });
+  }
+}
 
 for (const invalid of [
   { start: "bad", end: "bad" }, { start: "8:00" },
