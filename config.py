@@ -30,11 +30,11 @@ api = {
 log_file_name = "log.json"
 config_file_name = "config.ini"
 
-# 登录凭证
-config_file = read(config_file_name)
-
 # 是否从本地config.ini读取
 isLocal = False
+
+# 环境变量模式不依赖本地配置文件
+config_file = read(config_file_name) if isLocal else []
 
 sessionId = re.search(r'\"(.*?)\"', config_file[0]).group(1) if isLocal else os.environ["SESSION"]
 # email_user = str(re.search(r'\"(.*?)\"', config_file[1]).group(1)) if isLocal else os.environ["EMAIL_USER"]
