@@ -244,3 +244,11 @@ git diff --check
 - 先校验整份课表，再判断当天课程及触发窗口。任一课程时间无效，整轮检查终止，不触发 Actions、不查询或写入 KV，避免部分触发后才发现错误；错误仅包含固定说明，不输出无效字段内容。Cron 抛出错误，`/preview` 沿用现有错误响应返回 500。
 - 将原有“无效时间仍误触发”的已知缺陷测试改为拒绝测试，覆盖非补零时间、越界时间、尾部换行、空值、数字、缺字段、相等 / 倒序区间，以及混合合法课程和未来日期的无效课程；另验证预览失败及错误日志不暴露输入。修改前新增 12 项检查失败，修改后 Node.js 24.15.0 的完整 Worker 离线测试 55 项通过，原有窗口、时区、同开始时间合并、KV 与鉴权行为亦通过。
 - 当前本地课表也通过了修改后 Worker 的模拟预览，HTTP 全部拦截为本地数据。本轮不做完整课表 schema 或预览日期校验，不改变仓库常量、开关、触发窗口、KV 策略、Python、Secrets 或生产部署；`/test` 保留原有独立触发语义。未验证线上 Worker，此切片后续已获用户提交与推送授权，不包含 Cloudflare 部署。提交前复核 Python 79 项与 Worker 55 项离线测试均通过。
+
+该切片提交为 `3fe80f5`，已与前四个提交一并推送。GitHub 实际运行的 `Offline tests`（run `40157794122`）中 Python 3.10、Python 3.14 与 Worker 三个任务均成功；尚未部署 Cloudflare Worker。
+
+### 2026-10-25：同步 Worker 的 GitHub 仓库名
+
+- 经用户确认，将 Worker 的 `REPO` 从旧仓库名更新为 `frewily/Free-From-RainClassroom`；由其生成的 Actions dispatch 地址和公开课表地址随之更新。同步现有测试中的两个预期地址，以及项目 README 和 Cloudflare 部署说明的当前地址，不替换历史来源或上游仓库名称。
+- 运行代码仅改变一个仓库名常量，调度开关、分支、工作流名、KV、Secrets 与 Cron 均未调整。Node.js 24.15.0 的 55 项 Worker 离线测试、JavaScript 语法与 Diff 检查均通过；未触发真实 Actions 或连接生产 Worker。
+- 本次仓库名变更后续已获用户提交与推送授权；Cloudflare 部署由用户自行复制当前 `cloudflare/worker.js` 到原有 Worker 完成。本轮不操作 Cloudflare，不能将此前提交的 CI 成功表述为本次新地址的线上验证。

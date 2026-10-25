@@ -88,7 +88,7 @@ KV 具有最终一致性，先读再调用 API 再写的过程不具备原子锁
 Worker 向以下 GitHub REST API 发送 POST（Fork 应替换所有者、仓库和分支）：
 
 ```text
-https://api.github.com/repos/frewily/Fuck-Yangtze-RainClassroom/actions/workflows/python-app.yml/dispatches
+https://api.github.com/repos/frewily/Free-From-RainClassroom/actions/workflows/python-app.yml/dispatches
 ```
 
 ```http

@@ -10,7 +10,7 @@
 
 | 项目 | 位置 | 当前行为 |
 | --- | --- | --- |
-| `REPO` | 源码常量 | `frewily/Fuck-Yangtze-RainClassroom`；Fork 部署需改为自己的公开仓库 |
+| `REPO` | 源码常量 | `frewily/Free-From-RainClassroom`；Fork 部署需改为自己的公开仓库 |
 | `GITHUB_API` / `SCHEDULE_URL` | 源码常量 | 从 `REPO` 构建；工作流为 `python-app.yml`，课表为 `main/data/course_schedule.json` |
 | dispatch 分支 | `triggerGitHub()` 请求体 | `{"ref":"main"}`；改分支需同时核对 Raw URL 与工作流位置 |
 | `AUTO_DISPATCH` | 源码常量 | 当前为 `true`；只控制 Cron，不能通过环境变量覆盖 |

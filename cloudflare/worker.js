@@ -1,6 +1,6 @@
 // ===== 基础配置 =====
 
-const REPO = "frewily/Fuck-Yangtze-RainClassroom";
+const REPO = "frewily/Free-From-RainClassroom";
 
 const GITHUB_API =
   `https://api.github.com/repos/${REPO}/actions/workflows/python-app.yml/dispatches`;

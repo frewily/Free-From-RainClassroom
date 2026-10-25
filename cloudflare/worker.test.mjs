@@ -8,8 +8,8 @@ const source = await readFile(new URL("./worker.js", import.meta.url), "utf8");
 const { default: worker } = await import(
   `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`
 );
-const API = "https://api.github.com/repos/frewily/Fuck-Yangtze-RainClassroom/actions/workflows/python-app.yml/dispatches";
-const RAW = "https://raw.githubusercontent.com/frewily/Fuck-Yangtze-RainClassroom/main/data/course_schedule.json";
+const API = "https://api.github.com/repos/frewily/Free-From-RainClassroom/actions/workflows/python-app.yml/dispatches";
+const RAW = "https://raw.githubusercontent.com/frewily/Free-From-RainClassroom/main/data/course_schedule.json";
 const DAY = "2026-10-20";
 const KEY = `rainclassroom:${DAY}:08:00`;
 const course = (overrides = {}) => ({
