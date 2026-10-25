@@ -285,6 +285,8 @@ GitHub Actions 用户将值保存为仓库 Secret `SESSION`；本地 / 服务器
 
 Python 仅安装 [`requirements-test.txt`](requirements-test.txt) 中的三个基础依赖，不安装整套生产依赖或加载 OCR 模型。该清单固定直接测试依赖版本，未锁定所有传递依赖，也不代表生产环境兼容性已验证；生产的 `requirements.txt` 保持独立。
 
+生产 [`requirements.txt`](requirements.txt) 的七个直接依赖固定为 [2026-10-22 业务运行](https://github.com/frewily/Free-From-RainClassroom/actions/runs/39708915977)实际安装的版本，基线为 GitHub Actions 的 Ubuntu / Python 3.10。该次日志包含课堂发现、提交接口成功提示和下课记录，没有线程异常或 traceback；未调用图片 OCR，接口成功提示也不代表评分正确。此清单不锁定传递依赖，尚未按新清单重新安装验证；其他平台与生产导入链不能用轻量测试的通过结果代替验证。后续升级需单独确认版本和启动结果。
+
 在独立的本地测试环境中，可从仓库根目录执行：
 
 ```sh

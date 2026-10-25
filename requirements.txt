@@ -1,7 +1,8 @@
-openai
-opencv-python
-numpy
-requests
-paddleocr
-paddlepaddle
-websocket-client
+# Observed baseline: GitHub Actions Ubuntu / Python 3.10, run 39708915977.
+openai==3.36.0
+opencv-python==5.0.0.93
+numpy==2.2.6
+requests==2.34.2
+paddleocr==3.7.0
+paddlepaddle==3.3.1
+websocket-client==1.9.2
