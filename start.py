@@ -6,7 +6,7 @@ import requests
 
 from config import filtered_courses
 from function.course_schedule import current_monitor_window
-from function.check_in import SessionError, get_listening_classes_and_sign
+from function.check_in import CheckInError, SessionError, get_listening_classes_and_sign
 from function.listener_supervisor import ListenerError, ListenerSupervisor
 from function.listen_window import CHINA_TIME
 
@@ -65,8 +65,11 @@ def run_listening(supervisor):
 def run():
     try:
         main()
-    except (SessionError, ListenerError) as error:
+    except (CheckInError, SessionError, ListenerError) as error:
         print(f"运行停止：{error}", file=sys.stderr, flush=True)
+        raise SystemExit(1) from None
+    except requests.RequestException as error:
+        print(f"运行停止：课堂请求失败（{type(error).__name__}）。", file=sys.stderr, flush=True)
         raise SystemExit(1) from None
 
 

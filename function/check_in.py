@@ -12,10 +12,48 @@ class SessionError(RuntimeError):
     """The RainClassroom session can no longer be used safely."""
 
 
+class CheckInError(RuntimeError):
+    """A check-in response did not confirm usable classroom credentials."""
+
+
 SESSION_HELP = (
     "请检查或更新 GitHub Actions 的 SESSION Secret 后重试；"
     "若仍失败，请检查雨课堂服务状态。"
 )
+
+CHECK_IN_STATUS = "已取得课堂连接凭据（未核验个人考勤）"
+
+
+def _check_in_credentials(response):
+    if response.status_code in (401, 403):
+        raise SessionError(
+            f"雨课堂签到接口返回 HTTP {response.status_code}（未授权）。{SESSION_HELP}"
+        )
+    if response.status_code != 200:
+        raise CheckInError(f"进班请求返回 HTTP {response.status_code}，未取得有效课堂凭据。")
+    try:
+        payload = response.json()
+    except ValueError:
+        raise CheckInError("进班接口返回非 JSON 内容，无法确认结果。") from None
+    code = payload.get("code") if isinstance(payload, dict) else None
+    if type(code) is not int:
+        raise CheckInError("进班接口缺少有效业务状态，无法确认结果。")
+    if code != 0:
+        # Do not echo server messages or assign QR semantics to an undocumented code.
+        raise CheckInError(f"进班请求被拒绝（业务码 {code}），未取得有效课堂凭据。")
+    data = payload.get("data")
+    if not isinstance(data, dict):
+        raise CheckInError("进班接口返回的课堂凭据不完整，无法开始监听。")
+    socket_jwt = data.get("lessonToken")
+    jwt = response.headers.get("Set-Auth")
+    identity_id = data.get("identityId")
+    valid_identity = type(identity_id) is int or (
+        isinstance(identity_id, str) and bool(identity_id.strip())
+    )
+    valid_tokens = all(isinstance(token, str) and token.strip() for token in (socket_jwt, jwt))
+    if not valid_tokens or not valid_identity:
+        raise CheckInError("进班接口返回的课堂凭据不完整，无法开始监听。")
+    return socket_jwt, jwt, identity_id
 
 
 # 获取正在进行的
@@ -72,56 +110,42 @@ def get_listening_classes_and_sign(filtered_courses: list, seen_lesson_ids=None,
                     print("\n发现上课")
                     found_new_class = True
                 response_sign = check_in_on_listening(lesson_id)
+                socket_jwt, jwt, identity_id = _check_in_credentials(response_sign)
 
-                if response_sign.status_code in (401, 403):
-                    raise SessionError(
-                        f"雨课堂签到接口返回 HTTP {response_sign.status_code}（未授权）。"
-                        f"{SESSION_HELP}"
-                    )
+                status = CHECK_IN_STATUS
+                if name is None:
+                    name = get_user_name()
 
-                if response_sign.status_code == 200:
-                    status = "签到成功"
-                    if name is None:
-                        name = get_user_name()
+                print(course_name, status)
 
-                    print(course_name, status)
-                    data = response_sign.json()["data"]
-                    socket_jwt = data["lessonToken"]
+                def queue_on_listening_task():
+                    on_lesson_list.append({
+                        "ppt_jwt": jwt,
+                        "socket_jwt": socket_jwt,
+                        "lesson_id": lesson_id,
+                        "identity_id": identity_id,
+                        "course_name": course_name
+                    })
 
-                    jwt = response_sign.headers["Set-Auth"]
-                    # print(jwt)
-                    identity_id = data["identityId"]
-
-                    def queue_on_listening_task():
-                        on_lesson_list.append({
-                            "ppt_jwt": jwt,
-                            "socket_jwt": socket_jwt,
-                            "lesson_id": lesson_id,
-                            "identity_id": identity_id,
-                            "course_name": course_name
-                        })
-
-                    if len(filtered_courses) == 0:  # 无需过滤 全部进入监听队列
+                if len(filtered_courses) == 0:  # 无需过滤 全部进入监听队列
+                    queue_on_listening_task()
+                else:  # 只监听符合条件的课程 其余的就签到
+                    if course_name in filtered_courses:
                         queue_on_listening_task()
-                    else:  # 只监听符合条件的课程 其余的就签到
-                        if course_name in filtered_courses:
-                            queue_on_listening_task()
 
-                    # 将签到信息写入文件顶部
-                    new_log = {
-                        "id": lesson_id,
-                        "title": course_name,
-                        "name": course_name,
-                        "time": get_now(),
-                        "student": name,
-                        "status": status,
-                        "url": "https://changjiang.yuketang.cn/m/v2/lesson/student/" + str(lesson_id)
-                    }
-                    write_log(log_file_name, new_log)
-                    if seen_lesson_ids is not None:
-                        seen_lesson_ids.add(lesson_id)
-                else:
-                    print("签到失败，HTTP", response_sign.status_code)
+                # 将进班响应记录写入本地日志
+                new_log = {
+                    "id": lesson_id,
+                    "title": course_name,
+                    "name": course_name,
+                    "time": get_now(),
+                    "student": name,
+                    "status": status,
+                    "url": "https://changjiang.yuketang.cn/m/v2/lesson/student/" + str(lesson_id)
+                }
+                write_log(log_file_name, new_log)
+                if seen_lesson_ids is not None:
+                    seen_lesson_ids.add(lesson_id)
             return start_all_sockets(on_lesson_list, window_stop_event=window_stop_event,
                                      supervisor=supervisor)
 
@@ -196,25 +220,23 @@ def check_in_on_latest(check_num=1):
             print("名称:", course_name)
 
             response_sign = check_in_on_listening(courseware_id)
+            _check_in_credentials(response_sign)
 
-            if response_sign.status_code == 200:
-                status = "签到成功"
+            status = CHECK_IN_STATUS
 
-                print(name, status)
+            print(name, status)
 
-                # 将签到信息写入文件顶部
-                new_log = {
-                    "id": courseware_id,
-                    "title": courseware_title,
-                    "name": course_name,
-                    "time": get_now(),
-                    "student": name,
-                    "status": status,
-                    "url": "https://changjiang.yuketang.cn/m/v2/lesson/student/" + str(courseware_id)
-                }
-                write_log(log_file_name, new_log)
-            else:
-                print("失败", response_sign.status_code, response_sign.text)
+            # 将进班响应记录写入本地日志
+            new_log = {
+                "id": courseware_id,
+                "title": courseware_title,
+                "name": course_name,
+                "time": get_now(),
+                "student": name,
+                "status": status,
+                "url": "https://changjiang.yuketang.cn/m/v2/lesson/student/" + str(courseware_id)
+            }
+            write_log(log_file_name, new_log)
         else:
             print("没有找到数据")
     else:

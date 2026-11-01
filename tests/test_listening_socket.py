@@ -43,6 +43,217 @@ class FakeWebSocket:
         self.sock.connected = False
 
 
+class CheckInResponseTests(unittest.TestCase):
+    @staticmethod
+    def reply(payload=None, status=200, auth="test-auth", invalid_json=False):
+        if payload is None:
+            payload = {"code": 0, "data": {"lessonToken": "test-token", "identityId": 456}}
+        response = types.SimpleNamespace(
+            status_code=status,
+            headers=requests.structures.CaseInsensitiveDict(
+                {} if auth is None else {"set-auth": auth}
+            ),
+            json=mock.Mock(return_value=payload),
+        )
+        if invalid_json:
+            response.json.side_effect = ValueError("private-server-response")
+        return response
+
+    @contextlib.contextmanager
+    def isolated_call(self, response):
+        from function import check_in
+
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(mock.patch.object(check_in, "get_listening", return_value={
+                "onLessonClassrooms": [{"courseName": "test course", "lessonId": 123}]
+            }))
+            sign = stack.enter_context(mock.patch.object(
+                check_in, "check_in_on_listening", return_value=response
+            ))
+            user = stack.enter_context(mock.patch.object(check_in, "get_user_name", return_value="test user"))
+            log = stack.enter_context(mock.patch.object(check_in, "write_log"))
+            sockets = stack.enter_context(mock.patch.object(check_in, "start_all_sockets", return_value=[]))
+            output = stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+            yield check_in, sign, user, log, sockets, output
+
+    def test_business_rejection_never_prints_success(self):
+        response = self.reply({"code": 50070, "data": None, "msg": "private-server-response"})
+        with self.isolated_call(response) as (check_in, sign, user, log, sockets, output):
+            seen = set()
+            with self.assertRaises(check_in.CheckInError):
+                check_in.get_listening_classes_and_sign([], seen_lesson_ids=seen)
+            self.assertNotIn("签到成功", output.getvalue())
+            log.assert_not_called()
+            sockets.assert_not_called()
+            user.assert_not_called()
+            self.assertEqual(set(), seen)
+            sign.assert_called_once()
+
+    def test_valid_response_records_credentials_without_claiming_attendance(self):
+        for identity in (456, "456"):
+            with self.subTest(identity=identity), self.isolated_call(self.reply({
+                "code": 0, "data": {"lessonToken": "test-token", "identityId": identity}
+            })) as (check_in, sign, user, log, sockets, output):
+                seen = set()
+                check_in.get_listening_classes_and_sign([], seen_lesson_ids=seen)
+                self.assertEqual({123}, seen)
+                sign.assert_called_once_with(123)
+                sockets.assert_called_once()
+                self.assertEqual([{
+                    "ppt_jwt": "test-auth", "socket_jwt": "test-token", "lesson_id": 123,
+                    "identity_id": identity, "course_name": "test course",
+                }], sockets.call_args.args[0])
+                record = log.call_args.args[1]
+                self.assertIn("已取得课堂连接凭据", record["status"])
+                self.assertIn("未核验个人考勤", record["status"])
+                self.assertNotIn("签到成功", output.getvalue())
+                self.assertNotIn("test-token", output.getvalue())
+                self.assertNotIn("test-auth", output.getvalue())
+
+    def test_invalid_http_business_and_data_fail_closed(self):
+        from function import check_in
+
+        good_data = {"lessonToken": "test-token", "identityId": 456}
+        cases = [
+            ("http-201", self.reply(status=201)),
+            ("http-500", self.reply(status=500)),
+            ("business", self.reply({"code": 50070, "data": good_data, "msg": "private-server-response"})),
+            ("other-business", self.reply({"code": 50017, "data": None})),
+            ("missing-code", self.reply({"data": good_data})),
+            ("boolean-code", self.reply({"code": False, "data": good_data})),
+            ("string-code", self.reply({"code": "0", "data": good_data})),
+            ("float-code", self.reply({"code": 0.0, "data": good_data})),
+            ("list-payload", self.reply([])),
+            ("null-data", self.reply({"code": 0, "data": None})),
+            ("list-data", self.reply({"code": 0, "data": []})),
+            ("empty-data", self.reply({"code": 0, "data": {}})),
+            ("missing-token", self.reply({"code": 0, "data": {"identityId": 456}})),
+            ("blank-token", self.reply({"code": 0, "data": {**good_data, "lessonToken": "  "}})),
+            ("non-string-token", self.reply({"code": 0, "data": {**good_data, "lessonToken": 123}})),
+            ("missing-identity", self.reply({"code": 0, "data": {"lessonToken": "test-token"}})),
+            ("blank-identity", self.reply({"code": 0, "data": {**good_data, "identityId": " "}})),
+            ("null-identity", self.reply({"code": 0, "data": {**good_data, "identityId": None}})),
+            ("boolean-identity", self.reply({"code": 0, "data": {**good_data, "identityId": True}})),
+            ("object-identity", self.reply({"code": 0, "data": {**good_data, "identityId": {"private": "value"}}})),
+            ("missing-auth", self.reply(auth=None)),
+            ("blank-auth", self.reply(auth="  ")),
+            ("non-string-auth", self.reply(auth=123)),
+            ("non-json", self.reply(invalid_json=True)),
+        ]
+        for name, response in cases:
+            with self.subTest(name=name), self.isolated_call(response) as (_, sign, user, log, sockets, output):
+                seen = set()
+                with self.assertRaises(check_in.CheckInError) as caught:
+                    check_in.get_listening_classes_and_sign([], seen_lesson_ids=seen)
+                text = str(caught.exception) + output.getvalue()
+                self.assertNotIn("private-server-response", text)
+                self.assertNotIn("test-token", text)
+                self.assertNotIn("test-auth", text)
+                self.assertNotIn("动态二维码", text)
+                self.assertNotIn("签到成功", text)
+                self.assertEqual(set(), seen)
+                sign.assert_called_once()
+                user.assert_not_called()
+                log.assert_not_called()
+                sockets.assert_not_called()
+
+    def test_http_authorization_failure_preserves_session_error(self):
+        from function import check_in
+
+        for status in (401, 403):
+            response = self.reply(status=status)
+            with self.subTest(status=status), self.isolated_call(response) as (_, sign, user, log, sockets, output):
+                with self.assertRaises(check_in.SessionError) as caught:
+                    check_in.get_listening_classes_and_sign([])
+                self.assertIn("SESSION", str(caught.exception))
+                response.json.assert_not_called()
+                log.assert_not_called()
+                sockets.assert_not_called()
+
+    def test_failure_is_not_seen_and_later_explicit_check_can_succeed(self):
+        from function import check_in
+
+        with self.isolated_call(self.reply()) as (_, sign, user, log, sockets, output):
+            sign.side_effect = [self.reply({"code": 50070, "data": None}), self.reply()]
+            seen = set()
+            with self.assertRaises(check_in.CheckInError):
+                check_in.get_listening_classes_and_sign([], seen_lesson_ids=seen)
+            self.assertEqual(set(), seen)
+            self.assertEqual(1, sign.call_count)
+            check_in.get_listening_classes_and_sign([], seen_lesson_ids=seen)
+            check_in.get_listening_classes_and_sign([], seen_lesson_ids=seen)
+            self.assertEqual({123}, seen)
+            self.assertEqual(2, sign.call_count)
+            log.assert_called_once()
+
+    def test_unselected_course_still_requests_credentials_before_listener_filter(self):
+        with self.isolated_call(self.reply()) as (check_in, sign, user, log, sockets, output):
+            seen = set()
+            check_in.get_listening_classes_and_sign(["another course"], seen_lesson_ids=seen)
+            sign.assert_called_once_with(123)
+            log.assert_called_once()
+            self.assertEqual([], sockets.call_args.args[0])
+            self.assertEqual({123}, seen)
+
+    def test_legacy_path_uses_same_response_guard(self):
+        from function import check_in
+
+        listing = self.reply({"data": [{"coursewareId": 123, "coursewareTitle": "test title",
+                                       "courseName": "test course"}]})
+        for accepted in (False, True):
+            reply = self.reply() if accepted else self.reply({"code": 50070, "data": None})
+            with self.subTest(accepted=accepted), self.isolated_call(reply) as (_, sign, user, log, sockets, output), \
+                    mock.patch.object(check_in.requests, "post", return_value=listing), \
+                    mock.patch.object(check_in, "has_in_checked", return_value=False):
+                if accepted:
+                    check_in.check_in_on_latest()
+                    self.assertIn("未核验个人考勤", log.call_args.args[1]["status"])
+                else:
+                    with self.assertRaises(check_in.CheckInError):
+                        check_in.check_in_on_latest()
+                    log.assert_not_called()
+                self.assertNotIn("签到成功", output.getvalue())
+
+    def test_manual_and_window_runs_stop_safely_on_rejected_check_in(self):
+        import start
+        from function.listen_window import CHINA_TIME
+
+        for windowed in (False, True):
+            ending = datetime.now(CHINA_TIME) + timedelta(minutes=1) if windowed else None
+            with self.subTest(windowed=windowed), self.isolated_call(
+                self.reply({"code": 50070, "data": None, "msg": "private-server-response"})
+            ) as (_, sign, user, log, sockets, output), \
+                    mock.patch.dict(os.environ, {"GITHUB_EVENT_NAME": "workflow_dispatch"}), \
+                    mock.patch.object(start, "current_monitor_window", return_value=ending), \
+                    contextlib.redirect_stderr(io.StringIO()) as stderr:
+                with self.assertRaises(SystemExit) as caught:
+                    start.run()
+                self.assertEqual(1, caught.exception.code)
+                self.assertIn("50070", stderr.getvalue())
+                self.assertNotIn("private-server-response", stderr.getvalue())
+                self.assertNotIn("Traceback", stderr.getvalue())
+                log.assert_not_called()
+                sockets.assert_not_called()
+
+    def test_manual_transport_failure_exits_without_private_exception_text(self):
+        import start
+
+        with self.isolated_call(self.reply()) as (_, sign, user, log, sockets, output), \
+                mock.patch.dict(os.environ, {"GITHUB_EVENT_NAME": "workflow_dispatch"}), \
+                mock.patch.object(start, "current_monitor_window", return_value=None), \
+                contextlib.redirect_stderr(io.StringIO()) as stderr:
+            sign.side_effect = requests.ReadTimeout("private-server-response")
+            with self.assertRaises(SystemExit) as caught:
+                start.run()
+            self.assertEqual(1, caught.exception.code)
+            self.assertIn("ReadTimeout", stderr.getvalue())
+            self.assertNotIn("private-server-response", stderr.getvalue())
+            self.assertNotIn("Traceback", stderr.getvalue())
+            sign.assert_called_once()
+            log.assert_not_called()
+            sockets.assert_not_called()
+
+
 class ListeningSocketTests(unittest.TestCase):
     def setUp(self):
         # Enable reports with a fake sender; tests must never reach real SMTP.
@@ -129,7 +340,7 @@ class ListeningSocketTests(unittest.TestCase):
         lesson = {"lessonId": 123, "courseName": "test course"}
         response = types.SimpleNamespace(
             status_code=200, headers={"Set-Auth": "private-ppt"},
-            json=lambda: {"data": {"lessonToken": "private-socket", "identityId": 456}},
+            json=lambda: {"code": 0, "data": {"lessonToken": "private-socket", "identityId": 456}},
         )
 
         for windowed in (False, True):
@@ -338,7 +549,7 @@ class ListeningSocketTests(unittest.TestCase):
         response = types.SimpleNamespace(
             status_code=200,
             headers={"Set-Auth": "test-auth"},
-            json=lambda: {"data": {"lessonToken": "test-token", "identityId": 456}},
+            json=lambda: {"code": 0, "data": {"lessonToken": "test-token", "identityId": 456}},
         )
         seen_lesson_ids = set()
         with mock.patch.object(check_in, "get_listening", return_value={
