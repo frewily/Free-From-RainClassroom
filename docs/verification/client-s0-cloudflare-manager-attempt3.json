@@ -1,0 +1,173 @@
+{
+  "client_id": "840b60304c633c313f931fc8697f22f3",
+  "requested_scope_names": [
+    "D1 Write",
+    "Workers Admin",
+    "Workers KV Storage Write",
+    "Memberships Read",
+    "User Details Read"
+  ],
+  "requested_scope_ids": [
+    "d1.write",
+    "workers-scripts.admin",
+    "workers-kv-storage.write",
+    "memberships.read",
+    "user-details.read"
+  ],
+  "granted_scope_ids": [
+    "d1.write",
+    "workers-scripts.admin",
+    "workers-kv-storage.write",
+    "memberships.read",
+    "user-details.read"
+  ],
+  "workers_admin_continuation": true,
+  "module_format_continuation": true,
+  "client_secret_sent": false,
+  "callback_state_verified": true,
+  "worker_source_sha256": "e8829926b441b849fff0689e17338fb46f4db84024175450beb5e033bbd6f084",
+  "probe": "rain-s0-cf-deploy-20261028-v1",
+  "account_id": "6081b0f279a7de585cd27b877f1f5335",
+  "spec": {
+    "nonce": "58f9c6316cc1",
+    "worker": "rain-client-s0-deploy-20261028-58f9c6316cc1",
+    "kv": "rain-client-s0-kv-20261028-58f9c6316cc1",
+    "d1": "rain-client-s0-db-20261028-58f9c6316cc1"
+  },
+  "stage": "finished",
+  "functional_result": "passed",
+  "writes": [
+    {
+      "method": "PUT",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/workers/scripts/rain-client-s0-deploy-20261028-58f9c6316cc1",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": [],
+      "compiler_details": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/storage/kv/namespaces",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "PUT",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/storage/kv/namespaces/99e0ac2a78924b07800c1dff4f19ed65/values/58f9c6316cc1",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database/fa86667a-a845-4630-93d8-1e053d0e6289/query",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database/fa86667a-a845-4630-93d8-1e053d0e6289/query",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database/fa86667a-a845-4630-93d8-1e053d0e6289/query",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "PUT",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/workers/scripts/rain-client-s0-deploy-20261028-58f9c6316cc1",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": [],
+      "compiler_details": []
+    },
+    {
+      "method": "PUT",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/workers/scripts/rain-client-s0-deploy-20261028-58f9c6316cc1/secrets",
+      "http_status": 201,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/workers/scripts/rain-client-s0-deploy-20261028-58f9c6316cc1/subdomain",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/workers/scripts/rain-client-s0-deploy-20261028-58f9c6316cc1/subdomain",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "PUT",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/workers/scripts/rain-client-s0-deploy-20261028-58f9c6316cc1",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/workers/scripts/rain-client-s0-deploy-20261028-58f9c6316cc1/secrets/PROBE_KEY",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database/fa86667a-a845-4630-93d8-1e053d0e6289",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/storage/kv/namespaces/99e0ac2a78924b07800c1dff4f19ed65",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    }
+  ],
+  "cleanup_pending": [],
+  "worker_retained": true,
+  "credentials_saved_to_file": false,
+  "initial_profile_http_status": 200,
+  "account_discovery_verified": true,
+  "preflight_passed": true,
+  "worker_created": true,
+  "worker_compile_verified": true,
+  "kv_id": "99e0ac2a78924b07800c1dff4f19ed65",
+  "d1_id": "fa86667a-a845-4630-93d8-1e053d0e6289",
+  "kv_api_roundtrip": true,
+  "d1_api_roundtrip": true,
+  "worker_url": "https://rain-client-s0-deploy-20261028-58f9c6316cc1.2994508531.workers.dev",
+  "worker_deployment_verified": true,
+  "worker_binding_reads_verified": true,
+  "worker_closed_and_unbound": true,
+  "d1_removed": true,
+  "kv_removed": true,
+  "cleanup_verified": true,
+  "observed_at": "2026-10-28T11:56:35.998Z",
+  "access_revoke_http_status": 200,
+  "post_revoke_profile_http_status": 403,
+  "revocation_independently_verified": true,
+  "revocation_cleanup_pending": false,
+  "temporary_token_references_discarded": true
+}

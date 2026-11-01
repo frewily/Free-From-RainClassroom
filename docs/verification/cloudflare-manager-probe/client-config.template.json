@@ -1,0 +1,11 @@
+{
+  "client_id": null,
+  "official_scope_details_verified": false,
+  "scopes": [
+    {"name": "D1 Write", "id": null},
+    {"name": "Workers Editor", "id": null},
+    {"name": "Workers KV Storage Write", "id": null},
+    {"name": "Memberships Read", "id": null},
+    {"name": "User Details Read", "id": null}
+  ]
+}

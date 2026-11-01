@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-28",
+  "stage": "prepared_awaiting_approval",
+  "evidence_kind": "local_mock_and_synthetic_checks_only",
+  "mock_tests_passed": 28,
+  "mock_tests_failed": 0,
+  "python_helper_syntax_checked": true,
+  "workflow_yaml_parsed": true,
+  "local_workflow_script_matching_value_passed": true,
+  "local_workflow_script_wrong_value_rejected": true,
+  "dependency_hashes_match_plan": true,
+  "dependency_install_performed": false,
+  "real_sealed_box_roundtrip_performed": false,
+  "new_app_created": false,
+  "live_github_management_test_performed": false,
+  "cloud_writes_performed": false,
+  "production_changes_performed": false,
+  "source_sha256": {
+    "probe.mjs": "7df21445a49acbdba22d7b8de0584469f048c96dfccd3ec2d11e54daa3f39c7e",
+    "live.mjs": "35c3810f4f217ec83dd8ae833222887a15797d1e5a0d59148ec82a2e1e8c5048",
+    "seal.py": "b45a40980efe94f517b4e48fbf0a53e9ee2576dd325bcc9c38dd399c76f30c1e",
+    "probe.test.mjs": "f66a08f0260a6a62e31ad4a1d559e0e992b419ea1076c2af2772c884e5b361c9",
+    "requirements.lock": "e0ad0891d36a87c9569e33e44a1112dcfe29e978f70d4302a8b6948993a85f86",
+    "dependency-plan.json": "ef24449d2d42c94a3196d37ed6f8f2aa209cfcafb49fa247c89d706811f23b9c"
+  }
+}

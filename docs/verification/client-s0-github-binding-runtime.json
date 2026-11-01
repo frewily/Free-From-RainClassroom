@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-29",
+  "stage": "implementation_local_checks_and_apk_passed_phone_binding_pending",
+  "application_id": "top.frewily.rainclient.dev",
+  "version_name": "0.2.0",
+  "version_code": 2003,
+  "analysis_passed": true,
+  "behavior_tests_passed": 66,
+  "new_behavior_tests": 40,
+  "synthetic_preview_test_passed": true,
+  "synthetic_preview_widths": [
+    320,
+    390
+  ],
+  "real_phone_github_binding_verified": false,
+  "real_github_tokens_processed_by_agent": false,
+  "real_github_requests_performed_by_agent_this_slice": false,
+  "real_github_refresh_verified_in_flutter": false,
+  "cloud_write_or_dispatch_performed": false,
+  "new_dependencies_or_permissions": false,
+  "reused_private_app": {
+    "id": 5504900,
+    "public_client_id": "Iv23li36LZrIGh5lZQOR",
+    "owner": "frewily",
+    "name": "Rain S0 Manager 20261028"
+  },
+  "credentials_storage": "App-private encrypted storage in separate github.manager namespace",
+  "allowed_network": "GitHub account and installation metadata GET; official device/token OAuth POST; no redirects",
+  "rotation_recovery": "Persist pending marker before refresh; require reauthorization if outcome or pair persistence is indeterminate",
+  "stale_timeout_regression": {
+    "reproduced_before_fix": true,
+    "extra_cancellations_before_fix": 1,
+    "fixed_by": "Only the current operation may cancel the client when its deadline expires",
+    "passed_after_fix": true
+  },
+  "apk": {
+    "handoff_path": "/private/tmp/rain-client-s0/github-client-20261029/rainclient-0.2.0-arm64-dev.apk",
+    "bytes": 17393340,
+    "size_mb": 17.39,
+    "sha256": "7c258f916f7a4d82eb482b163b63ed3a74ab477532ffb75c2de0172bc31db50f",
+    "signature_verified": true,
+    "same_certificate_as_previous_phone_accepted_apk": true,
+    "signing": "development debug keystore; release build",
+    "debuggable": false,
+    "abis": [
+      "arm64-v8a"
+    ],
+    "zip_16kb_alignment_verified": true,
+    "elf_16kb_alignment_verified": true,
+    "permissions": [
+      "android.permission.INTERNET",
+      "top.frewily.rainclient.dev.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+    ]
+  },
+  "native_libraries": [
+    {
+      "file": "lib/arm64-v8a/libapp.so",
+      "load_alignments": [
+        65536,
+        65536,
+        65536
+      ]
+    },
+    {
+      "file": "lib/arm64-v8a/libdartjni.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "file": "lib/arm64-v8a/libflutter.so",
+      "load_alignments": [
+        65536,
+        65536,
+        65536
+      ]
+    }
+  ],
+  "source_sha256": {
+    "apps/client/android/app/build.gradle.kts": "28a54848d4df46f7eb26f2e6989d24eb424331429a0e283ba6fe817654b6fd93",
+    "apps/client/android/app/src/main/AndroidManifest.xml": "807e378e751083a3bc1d56bc0e164b67a097b3bff692bc792fed7d009084969a",
+    "apps/client/android/app/src/main/kotlin/top/frewily/rainclient/MainActivity.kt": "99d93b8e871dd4f6b50528e4bcbe81869c1653ed6cd2e3b77081451bd7ec4b0c",
+    "apps/client/android/app/src/main/res/xml/data_extraction_rules.xml": "708b4a6bbf55a93afc4f64284d153a4778321ac7dd8d9de891f449f7a64a33e8",
+    "apps/client/android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+    "apps/client/android/gradle/wrapper/gradle-wrapper.properties": "4cbe14060ba54f3733879c578450a8fe15efce6e0cf154e862453a46e538df11",
+    "apps/client/android/gradle.properties": "e519b990eef645cb40209e92933ba9b0f7b141a3c818dde4f1a453ee4c100c1d",
+    "apps/client/lib/auth/cookie_reader.dart": "7fabf838dd2bbf3ca32afba9b0ff26187cf44d2d4678c6530e013ac70c0297d7",
+    "apps/client/lib/auth/login_navigation.dart": "9840d4427b6f8ea0a671b9c9ea49d8e2181b6e428c20ccf79c14d5fecb9d6501",
+    "apps/client/lib/auth/session_client.dart": "4ded68bbf7caab9086d51892421df0e1438d09a93d488e2018aae9dedf4c6e2a",
+    "apps/client/lib/auth/session_controller.dart": "f3f452c98aaf4b830c86c6a5a6df8cc8e4eed5ac2682c93258e6208c48903844",
+    "apps/client/lib/auth/session_cookie.dart": "1d00b355e1ee0f4f5617c14fcc2f52890f354ce833a9936346596501e99a359e",
+    "apps/client/lib/auth/session_store.dart": "f24e6c8dfc963f8e2035bd0faa3a7c37f8edca6649ff1b50173abdbc86a5691b",
+    "apps/client/lib/github/github_client.dart": "066d5a8240f19486aa338618206ec7f133d88806db2ed672f1fe4014559952cb",
+    "apps/client/lib/github/github_controller.dart": "59afd0135ad18783bab0266862e78a2775535be96d1f3127a5b9c7ec63f5dca7",
+    "apps/client/lib/github/github_models.dart": "2c9bb746014b386aca34d53085cf2a6303fadee193e82b26badbf708bf29fea8",
+    "apps/client/lib/github/github_page.dart": "bf2045ccfcafe2a22aeb8b8421883337ea33448652dbe47fe5444442acdb0206",
+    "apps/client/lib/github/github_store.dart": "1caee4dc30f538193f04dfbdf66db7023f4430a79ae30dd6b0c302f6c3e664c0",
+    "apps/client/lib/login_page.dart": "df42e1f7074908588b567ebd0dffb1c846d2e7cbc7fc2b2db451c623b51aa7af",
+    "apps/client/lib/main.dart": "047fb8d098109b6690384360f57b449888e85c6a7fe28d925ae56254e5817507",
+    "apps/client/pubspec.lock": "6c6147d221ed1aadbcac2f5383924e0a23b8d884e9b4dc6dbf885b146c8e0ed7",
+    "apps/client/pubspec.yaml": "e69ca5be657ec68e6a995bce62ce24a1f805c844cf6ce743cf849cdb5c8601da",
+    "apps/client/test/auth_fakes.dart": "ebf7cfff9c16f3952bd4270ca78af0f12cc998f3cfa931a530d29c6ccdce5b7c",
+    "apps/client/test/connection_home_test.dart": "9ea9901a329c427c6d34712f3d125a8bc9c12fef753d07ce04f2c44dcef42f8c",
+    "apps/client/test/github_client_test.dart": "bef5943ec30252fc93f9a52b9f948928864876be4eaec58c2815e53f81539b6b",
+    "apps/client/test/github_controller_test.dart": "283c607205898e5a6286631d9b0f2fb429f87f2a49e6fda49a2f7f208f334781",
+    "apps/client/test/github_fakes.dart": "2b0267835ac5730cb7ec5efca8eae7e59a558bea9f2c2b325bbd64491ac6b85d",
+    "apps/client/test/github_page_test.dart": "c936c28a52b7533b4db90b3845e2710b439a8e2d501367d9281d8bde0b7ae801",
+    "apps/client/test/login_page_test.dart": "875a16881c2dbb8c24212404f451aea7480ea0fde4fbe76056dcd940a113953d",
+    "apps/client/test/session_client_test.dart": "8aa309a48cffb6250412229d84d8e262c2067f1b6abb5879a39213bcd6be399d",
+    "apps/client/test/session_controller_test.dart": "16ca80e9a412562bc02f6ccfcb977c54cba748572f2168c48cd3fb7f45e164f1",
+    "apps/client/test/session_cookie_test.dart": "ce43f954d6bff699c02bc93638599cdad2e749de1f0b1775b84fb698e25abb75"
+  },
+  "original_login_source_files_changed": [
+    "lib/main.dart",
+    "lib/login_page.dart",
+    "pubspec.yaml"
+  ],
+  "original_login_acceptance_evidence": "client-s0-android-login-human-acceptance.json",
+  "git_commit_or_push_performed": false,
+  "pending_human_acceptance": [
+    "Official GitHub device authorization on phone",
+    "Expected account and authorized test repository displayed",
+    "Selected repository and connection restored after relaunch"
+  ],
+  "not_in_slice": [
+    "Cloudflare client binding",
+    "Repository writes or deployment",
+    "Public cross-account release",
+    "Cloud long-term scheduling",
+    "Mac Flutter build"
+  ]
+}

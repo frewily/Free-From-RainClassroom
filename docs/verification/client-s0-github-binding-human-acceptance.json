@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-30",
+  "evidence_kind": "direct_user_report_not_agent_observation",
+  "user_statement": "全部通过了",
+  "accepted_version_name": "0.2.0",
+  "accepted_version_code": 2003,
+  "accepted_apk_sha256": "7c258f916f7a4d82eb482b163b63ed3a74ab477532ffb75c2de0172bc31db50f",
+  "reported_passed_steps": [
+    "Cover-install development app and open GitHub tab",
+    "Complete official device authorization for existing private test app",
+    "Display account and original authorized test repository; select repository",
+    "Relaunch restores GitHub connection and selected repository"
+  ],
+  "device_model_source": "Prior user report: 一加 Ace5 至尊版 / Android 16",
+  "device_independently_observed": false,
+  "credentials_read_by_agent": false,
+  "real_token_refresh_independently_verified": false,
+  "local_disconnect_test_reported_this_round": false,
+  "new_rain_login_regression_reported_this_round": false,
+  "cloud_configuration_or_workflow_run_verified": false,
+  "next_slice": "Cloudflare binding: official PKCE authorization, phone callback, account identification and local restore",
+  "notes": [
+    "The four passed steps refer to the immediately preceding delivery instructions.",
+    "Original runtime JSON preserves build-time observations before phone acceptance.",
+    "No source, dependency, APK, cloud resource, git commit or push changed in this acceptance update."
+  ]
+}

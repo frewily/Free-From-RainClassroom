@@ -1,0 +1,184 @@
+{
+  "date": "2026-10-28",
+  "stage": "read_only_preflight_and_plan",
+  "installation_approved": false,
+  "sdk_installed_by_this_probe": false,
+  "project_created": false,
+  "phone_apk_installed": false,
+  "host": {
+    "architecture": "arm64",
+    "macos": "27.0.1",
+    "build": "26A434",
+    "selected_developer_directory": "/Library/Developer/CommandLineTools",
+    "free_space_gib_approx": 232,
+    "flutter_on_path": false,
+    "dart_on_path": false,
+    "adb_on_path": false,
+    "android_sdk_standard_path_present": false,
+    "full_xcode_standard_path_present": false,
+    "android_studio_standard_path_present": false,
+    "cocoapods_on_path_or_local_gem": false,
+    "java17": {
+      "home": "/opt/homebrew/opt/openjdk@17",
+      "version": "17.0.15"
+    },
+    "java23": {
+      "home": "/opt/homebrew/opt/openjdk@23",
+      "version": "23.0.2"
+    },
+    "default_java_home_version": "1.8.0_492",
+    "existing_gradle_and_android_user_directories_present": true,
+    "alternate_nonstandard_toolchain_locations_exhaustively_searched": false,
+    "rosetta_receipt_found": false,
+    "rosetta_receipt_absence_is_not_exhaustive_installation_check": true
+  },
+  "user_device_preference": {
+    "android_phone_available": true,
+    "usb_connection_available": true,
+    "reported_by_user": true,
+    "android_os_and_abi_verified": false,
+    "usb_debugging_authorized": false
+  },
+  "flutter_candidate": {
+    "hash": "737ba8f885dc774b53b442759999a312c9461e4e",
+    "channel": "stable",
+    "version": "3.47.8",
+    "dart_sdk_version": "3.13.7",
+    "dart_sdk_arch": "arm64",
+    "release_date": "2026-10-23T18:40:08.569697Z",
+    "archive": "stable/macos/flutter_macos_arm64_3.47.8-stable.zip",
+    "sha256": "6114edc2dae3636cfefb7e4456a4510399ee856e324149b34dbacb509e329d05",
+    "url": "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.47.8-stable.zip",
+    "archive_download_bytes": 2267355570,
+    "version_index_url": "https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json",
+    "version_index_source": "Official Flutter SDK archive deferred script main.client.dart.js_3.part.js",
+    "previous_index_path_http_status": 404
+  },
+  "android_command_line_tools_candidate": {
+    "revision": "22.0",
+    "archive": "commandlinetools-mac_arm64-15859902_latest.zip",
+    "url": "https://dl.google.com/android/repository/commandlinetools-mac_arm64-15859902_latest.zip",
+    "download_bytes": 156083281,
+    "sha256": "835b62a26162b229b441d1f6d4680383815a270809eb33522c0d480fa5002c4e",
+    "source": "https://developer.android.com/studio#command-line-tools-only",
+    "direct_head_http_status": 200,
+    "proxy_head_http_status": 404,
+    "repository_index_version_is_newer_than_web_page": true,
+    "will_not_follow_latest_alias": true
+  },
+  "android_packages_candidate": [
+    {
+      "package": "platform-tools",
+      "revision": "37.0.1",
+      "url": "https://dl.google.com/android/repository/platform-tools_r37.0.1-darwin.zip",
+      "download_bytes": 16110554,
+      "repository_checksum": "6ae73f4de6452dc57e62ec02b68eed92a4c21661"
+    },
+    {
+      "package": "platforms;android-36",
+      "revision": "2.0.0",
+      "url": "https://dl.google.com/android/repository/platform-36_r02.zip",
+      "download_bytes": 65878410,
+      "repository_checksum": "2c1a80dd4d9f7d0e6dd336ec603d9b5c55a6f576"
+    },
+    {
+      "package": "build-tools;36.0.0",
+      "revision": "36.0.0",
+      "url": "https://dl.google.com/android/repository/build-tools_r36_macosx.zip",
+      "download_bytes": 79121749,
+      "repository_checksum": "199ae0047ee61e842f8ee0c6d3918e44fb9a1f83"
+    },
+    {
+      "package": "ndk;28.2.13676358",
+      "revision": "28.2.13676358",
+      "url": "https://dl.google.com/android/repository/android-ndk-r28c-darwin.zip",
+      "download_bytes": 952495160,
+      "repository_checksum": "fc20a6bf15a30fb3428c9b60a7308793a362dc6d"
+    }
+  ],
+  "flutter_template_versions": {
+    "flutter_commit": "737ba8f885dc774b53b442759999a312c9461e4e",
+    "gradle": "9.3.1",
+    "android_gradle_plugin": "9.1.0",
+    "kotlin_gradle_plugin": "2.4.0",
+    "compile_sdk": 36,
+    "target_sdk": 36,
+    "min_sdk": 24,
+    "ndk": "28.2.13676358",
+    "agp_min_java": 17,
+    "sdkmanager_java_min_verified": false,
+    "existing_java23_available_if_required": true
+  },
+  "plan": {
+    "toolchain_root": "/Users/frewily/Library/Developer/RainClient",
+    "temporary_project": "/private/tmp/rain-client-s0/flutter-device-probe",
+    "android_application_id": "top.frewily.rainclient.probe",
+    "first_slice": "Install approved SDKs, build a synthetic minimal Android probe and verify first frame on a user-selected phone",
+    "android_disk_budget_gib": [
+      20,
+      25
+    ],
+    "xcode_additional_disk_budget_gib": [
+      20,
+      35
+    ],
+    "disk_budgets_are_estimates": true,
+    "global_shell_profile_changes": false,
+    "system_java_changes": false,
+    "existing_caches_reused_or_modified": false,
+    "android_studio_requested": false,
+    "emulator_requested": false,
+    "cocoapods_requested": false,
+    "cmake_requested": false,
+    "new_flutter_plugins_requested": false,
+    "real_login_or_cloud_authorization_in_first_slice": false,
+    "requires_user_license_review": true,
+    "xcode_install_and_license_by_user": true
+  },
+  "public_research_files_sha256": {
+    "flutter-spm.html": "f7b6b732455e85e0e095ba46a148a4fdff89d0d7d686ffb3cfbd897afe582ebb",
+    "main.client.dart.js_37.part.js": "1057e481cdb1cea873487d0cc9180d5bb5ecf78191ea588322f45f2613e104f7",
+    "flutter-manual.html": "db52a7c324537998c430ba3ae66ba5db1d35818d0658705208c88a5a21b89ae9",
+    "android-agp91.html": "0379efdacdbf81aa4931f4a69eb7aa567eabd008ec34a76229e11c342e1bd3fd",
+    "flutter-android.html": "94c9b7b6630ead18570ee49d3f7f098abb64f6f5f42220a822ba70693581caef",
+    "flutter-macos.html": "016a3dc2c8c247c6860e6e2363871eb533d3f82ba94bb00066945fbd7d8aeb26",
+    "flutter-archive.html": "d157476b5bf25e2b47a1e6f8bc5efffd9e58f3852eba6d8784ac434d957666ee",
+    "releases_macos.json": "24b326850806cc75c81371cfb73f071d3154fd877b8a7fb29484c5248be13b7b",
+    "main.client.dart.js_38.part.js": "809acebb5bfa5bedd342280141e6f7a2621393a2a47eedceaa929c163766b457",
+    "android-repository-direct.xml": "056e15b339c224766671e7a2b45719fd37e75c14bd4874493eea829a8435f4c0",
+    "main.client.dart.js_3.part.js": "2b042206456fc2021d3034dcc53ae25db0b637021b133cb32fc4f579f72c79ba",
+    "flutter-docs-client.js": "a45e4d1cbb735533382ef86abdfecc510e84d35601611ba11b3d7a5f7e360b87",
+    "android-studio-downloads.html": "1ac83607f209d955f35fb7e6dccf3200d6d4a7730091f3613754debae5e47517",
+    "android-command-line-tools.html": "fd401fa951fec9a65d250139605079da32d0be5436b85a20ee6913b51e983d80",
+    "apple-xcode-support.html": "cd109da53340634413a62da81fcd297ff3653e7a6243eb8924639531eaa3503e"
+  },
+  "not_verified": [
+    "SDK installation or execution",
+    "Android OS level, CPU ABI and USB debugging",
+    "Flutter build or on-device rendering",
+    "Flutter Mac build or Xcode setup",
+    "Flutter login, callbacks, secure storage or production credentials",
+    "release signing and installation"
+  ],
+  "observed_at": "2026-10-28T12:17:54.743921+00:00",
+  "official_flutter_source_files": [
+    {
+      "repository": "flutter/flutter",
+      "ref": "737ba8f885dc774b53b442759999a312c9461e4e",
+      "path": "packages/flutter_tools/lib/src/android/gradle_utils.dart",
+      "blob_sha": "d0c2af17a1818510bafc3604ca2a6a3ca27ed92a"
+    },
+    {
+      "repository": "flutter/flutter",
+      "ref": "737ba8f885dc774b53b442759999a312c9461e4e",
+      "path": "packages/flutter_tools/gradle/src/main/kotlin/FlutterExtension.kt",
+      "blob_sha": "dfce6d1deb8ff53f0fa5e12292fd2735bea6a54d"
+    },
+    {
+      "repository": "flutter/flutter",
+      "ref": "737ba8f885dc774b53b442759999a312c9461e4e",
+      "path": "packages/flutter_tools/templates/app/pubspec.yaml.tmpl",
+      "blob_sha": "10509c182906b13ec8e56c2b9fd9b6dfc7796ad2"
+    }
+  ]
+}

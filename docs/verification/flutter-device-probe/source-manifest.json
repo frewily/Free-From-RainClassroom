@@ -1,0 +1,23 @@
+{
+  "flutter_tag": "3.47.8",
+  "flutter_commit": "737ba8f885dc774b53b442759999a312c9461e4e",
+  "application_id": "top.frewily.rainclient.probe",
+  "files_sha256": {
+    "lib/main.dart": "8b05422738d1f66541d60d915de699e0d4c31087a6817099548721b3abb0b604",
+    "test/widget_test.dart": "c1928922ffebf95e53cbcbfcfa937b822053481566db7c995dd8873a33e8be11",
+    "pubspec.yaml": "07db3b2841a2565555b26cdee7ebb1ffdef7f5fbae7e5f640941dfcd23df13aa",
+    "pubspec.lock": "add66ed65ebef8bf9075c23e474c7c2944d23079d5a0282100c25815bcf4a11f",
+    "android/gradle.properties": "a25fbb9abf5647026c548beafbaa745e7b8a023e7306865d7fa36f281f2159f1",
+    "android/settings.gradle.kts": "016759283e88ade6eba92910583feeef88b962839b957aa414296afd2952d122",
+    "android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+    "android/app/build.gradle.kts": "4591c8d751b31c13c2b48ae96945a0888d9c21dd18e57cf2cec5e32cbf15c5f8",
+    "android/app/src/main/AndroidManifest.xml": "96171e538fbd42c138ffe5502fc4b2e81595d1b048becdbd3ae39ebda527df2d",
+    "android/gradle/wrapper/gradle-wrapper.properties": "4cbe14060ba54f3733879c578450a8fe15efce6e0cf154e862453a46e538df11"
+  },
+  "static_analysis_passed": true,
+  "widget_tests_passed": 1,
+  "android_apk_build_verified": true,
+  "device_verified": false,
+  "apk_sha256": "5f02923b7a32563a6aeb7dc3514bba9c45bf67103b3510da21cae071c58fca63",
+  "signature_verified": true
+}

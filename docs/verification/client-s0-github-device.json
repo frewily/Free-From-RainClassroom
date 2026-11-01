@@ -1,0 +1,33 @@
+{
+  "access_token_rotated": true,
+  "authorization_cleanup_pending": true,
+  "cleanup_request_accepted": true,
+  "cleanup_status": "GitHub reported: Job queued to revoke all user tokens; final revocation not independently confirmed",
+  "client_secret_sent": false,
+  "device_code_http_status": 200,
+  "granted_scopes": [
+    "read:user"
+  ],
+  "initial_expires_in": 28800,
+  "initial_profile_http_status": 200,
+  "initial_profile_valid": true,
+  "initial_refresh_token_present": true,
+  "local_probe_stopped": true,
+  "observed_at": "2026-10-26T06:40:34.827Z",
+  "old_access_http_status": 401,
+  "probe_source_sha256": "641c3b4bec58f5ec8beeb77be191cd0fb3b735e95c1ec70438f20280513ed43e",
+  "refresh_http_status": 200,
+  "refresh_token_rotated": true,
+  "refreshed_expires_in": 28800,
+  "refreshed_profile_http_status": 200,
+  "refreshed_profile_valid": true,
+  "requested_scopes": [
+    "read:user",
+    "offline_access"
+  ],
+  "same_identity": true,
+  "scope": "GitHub OAuth identity and immediate refresh in an independent Node process; not repository writes, workflow dispatch, or Cloudflare runtime execution",
+  "stage": "passed",
+  "test_app_registration_retained": true,
+  "token_exchange_http_status": 200
+}

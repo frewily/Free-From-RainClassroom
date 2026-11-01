@@ -1,0 +1,127 @@
+{
+  "date": "2026-10-28",
+  "stage": "completed",
+  "overall_functional_result": "passed",
+  "client_id": "840b60304c633c313f931fc8697f22f3",
+  "client_visibility": "private",
+  "account_id": "6081b0f279a7de585cd27b877f1f5335",
+  "granted_scope_names": [
+    "D1 Write",
+    "Workers Admin",
+    "Workers KV Storage Write",
+    "Memberships Read",
+    "User Details Read"
+  ],
+  "granted_scope_ids": [
+    "d1.write",
+    "workers-scripts.admin",
+    "workers-kv-storage.write",
+    "memberships.read",
+    "user-details.read"
+  ],
+  "initial_approval_received": true,
+  "workers_admin_replacement_explicitly_approved": true,
+  "first_attempt": {
+    "first_attempt_evidence": "client-s0-cloudflare-manager-attempt1.json",
+    "first_attempt_source_sha256": {
+      "worker.mjs": "e8829926b441b849fff0689e17338fb46f4db84024175450beb5e033bbd6f084",
+      "probe.mjs": "7a0cfa2b8514b3ea732fccc59de4aa48f0d1e50b650e6d05f1c386ee789c75f9",
+      "live.mjs": "4026015f87de244ff6c78185c9122406c91bb8b0f8377e7c1e4858dece1d119f",
+      "probe.test.mjs": "ebbce317317f46a0c98ded15dede15dcd1a1c711ea3528a54e09270830ce5011",
+      "client-config.template.json": "f8a7eb86e27ae8406426283297bb967e06a74d2f1d38dd1b489a5e9345ccb5e7"
+    },
+    "worker_upload_http_status": 403,
+    "worker_created": false,
+    "initial_worker_retained_field_was_policy_default": true,
+    "exact_403_cause_verified": false
+  },
+  "second_attempt": {
+    "evidence": "client-s0-cloudflare-manager-attempt2.json",
+    "worker_upload_http_status": 400,
+    "error_codes": [
+      10021
+    ],
+    "worker_created": false,
+    "cleanup_verified": true,
+    "revocation_independently_verified": true
+  },
+  "successful_attempt_evidence": "client-s0-cloudflare-manager-attempt3.json",
+  "module_format_repair": {
+    "mime_before": "application/javascript",
+    "mime_after": "application/javascript+module",
+    "source": "https://developers.cloudflare.com/workers/platform/infrastructure-as-code/#cloudflare-rest-api",
+    "documentation_sha256": "a0a1c51e44467f9e3227248f6295ba007e415db67f6f8863b3e7a966473a7fbf",
+    "compile_before_storage_allocation": true,
+    "scope_profile_unchanged": true,
+    "mock_tests_passed": 19,
+    "source_sha256": {
+      "worker.mjs": "e8829926b441b849fff0689e17338fb46f4db84024175450beb5e033bbd6f084",
+      "probe.mjs": "8a92c1bf1747c39d29e231c57eba39890b380f6d0292e7c52130172beaf6efd6",
+      "live.mjs": "b888641226893856239904712e503c02a71cc5b1626145dcdf0f35cbdd00a6c7",
+      "probe.test.mjs": "3aa0902b867456f9c0087bcbcfa1165a44a64032519bd7616c90b7cc3b0fdd24"
+    }
+  },
+  "authorization_wait_recovery": {
+    "previous_process_exited_before_callback": true,
+    "previous_stage": "awaiting_authorization",
+    "original_resource_spec_preserved": true,
+    "old_guard_preserved": true,
+    "separate_exclusive_resume_guard": true,
+    "scope_and_worker_source_unchanged": true,
+    "fresh_pkce_and_state": true,
+    "prior_cleanup_and_revocation_rechecked": true
+  },
+  "local_checks_passed": 20,
+  "successful_attempt_source_sha256": {
+    "probe.mjs": "8a92c1bf1747c39d29e231c57eba39890b380f6d0292e7c52130172beaf6efd6",
+    "worker.mjs": "e8829926b441b849fff0689e17338fb46f4db84024175450beb5e033bbd6f084",
+    "live.mjs": "0d291283996a8fe957695ea7ef9f7d76fd35ac6b7b6e1e33b8fe43473d18b31d",
+    "probe.test.mjs": "b8425e028ab87c66a40add6a65d83813733d6bcaae27665cc89c594462e383f2"
+  },
+  "worker_upload_http_status": 200,
+  "retained_worker_name": "rain-client-s0-deploy-20261028-58f9c6316cc1",
+  "account_discovery_verified": true,
+  "kv_api_roundtrip_verified": true,
+  "d1_api_roundtrip_verified": true,
+  "worker_created": true,
+  "worker_deployment_verified": true,
+  "worker_binding_reads_verified": true,
+  "worker_closed_and_unbound": true,
+  "kv_removed": true,
+  "d1_removed": true,
+  "cleanup_verified": true,
+  "cleanup_pending": [],
+  "access_revoke_http_status": 200,
+  "post_revoke_profile_http_status": 403,
+  "revocation_independently_verified": true,
+  "temporary_token_references_discarded": true,
+  "public_entry_check": {
+    "method": "GET",
+    "path": "/health",
+    "credentials_sent": false,
+    "http_status": 404,
+    "observed_at": "2026-10-28T12:00:00.138089+00:00"
+  },
+  "local_probe_exited": true,
+  "retained_test_workers_total": 2,
+  "production_resources_modified": false,
+  "dns_modified": false,
+  "cron_added": false,
+  "credentials_saved_to_file": false,
+  "new_dependencies_installed": false,
+  "business_repository_committed_or_pushed": false,
+  "not_verified": [
+    "Cloudflare public or cross-account authorization",
+    "Cloudflare refresh",
+    "Cron configuration",
+    "GitHub rotating credentials persistence and concurrent refresh",
+    "automatic Fork",
+    "Flutter integration",
+    "Android login and callbacks"
+  ],
+  "observed_at": "2026-10-28T11:56:35.998Z",
+  "post_attempt_comment_only_source_sha256": {
+    "probe.mjs": "40212aa83a54aa7f14299a44d27ddb36e6419603be8bbda8f31bdb92734a6ee9"
+  },
+  "post_attempt_change": "Updated only the outdated Editor-only comment; runtime behavior is unchanged."
+}

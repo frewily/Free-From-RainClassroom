@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-29",
+  "stage": "apk_and_local_checks_passed_real_phone_login_pending",
+  "project": "apps/client",
+  "application_id": "top.frewily.rainclient.dev",
+  "dependencies_approved": true,
+  "dependencies_installed": true,
+  "resolved_direct_dependencies": [
+    {
+      "name": "webview_flutter",
+      "version": "4.14.1",
+      "archive_sha256": "d53e1ccf5516f25017e3c9d44c39034db352d20fa34fe200674270242c2c5111",
+      "matches_reviewed_metadata": true
+    },
+    {
+      "name": "webview_flutter_android",
+      "version": "4.14.1",
+      "archive_sha256": "4de8b3d1ff4ebe1bdb42e68a5e4f809194a3cb0117a8f495f590004f00da3964",
+      "matches_reviewed_metadata": true
+    },
+    {
+      "name": "flutter_secure_storage",
+      "version": "11.2.0",
+      "archive_sha256": "d4e1fb6b2cb524868929e78dc0282fa000554b22060fb53789dc481c9fc95bb8",
+      "matches_reviewed_metadata": true
+    },
+    {
+      "name": "url_launcher",
+      "version": "6.3.3",
+      "archive_sha256": "e8cc955c97e06df9879140a1fe301f3d493f01b7c62dec7f46834be31d7e9fda",
+      "matches_reviewed_metadata": true
+    }
+  ],
+  "analysis_passed": true,
+  "behavior_tests_passed": 26,
+  "synthetic_preview_test_passed": true,
+  "preview_uses_real_credentials": false,
+  "real_phone_login_verified": false,
+  "android_keystore_on_real_phone_verified": false,
+  "same_phone_official_login_return_verified": false,
+  "mac_build_verified": false,
+  "real_session_processed_by_agent": false,
+  "approved_anonymous_controls_evidence": "client-s0-android-login-controls.json",
+  "client_session_check_endpoint": "https://changjiang.yuketang.cn/v2/api/web/userinfo",
+  "check_transport_follows_redirects": false,
+  "check_total_timeout_seconds": 20,
+  "response_limit_bytes": 262144,
+  "local_io_timeout_seconds": 8,
+  "logout_and_cloud_stop_separate": true,
+  "late_read_regression": {
+    "failed_before_fix": true,
+    "original_failure": "Late cancel restored previous_session after logout",
+    "fixed_by": [
+      "Check operation generation before retaining a read result",
+      "Ignore cancellation outside the active login/failed-cancel flow",
+      "Reset recovery action after successful transitions"
+    ],
+    "passed_after_fix": true
+  },
+  "android_build_attempts": [
+    {
+      "result": "failed",
+      "reason": "jni_flutter defaults to compileSdk 35",
+      "duration_seconds": 293.4,
+      "full_log_retained": false
+    },
+    {
+      "result": "failed",
+      "reason": "jni also defaults to compileSdk 35",
+      "duration_seconds": 1.428
+    },
+    {
+      "result": "failed",
+      "reason": "default SDK CMake 3.22.1 not present; existing external tools not yet selected",
+      "duration_seconds": 12.1
+    },
+    {
+      "result": "passed",
+      "duration_seconds": 108.8,
+      "mode": "arm64 Flutter engine with universal JNI dependencies"
+    },
+    {
+      "result": "passed",
+      "duration_seconds": 7.8,
+      "mode": "ARM64 split APK; final handoff artifact"
+    }
+  ],
+  "apk_built": true,
+  "git_commit_or_push_performed": false,
+  "cloud_resources_modified": false,
+  "extra_sdk_or_java_installed": false,
+  "observed_at": "2026-10-29T09:56:52.709364+00:00",
+  "apk": {
+    "path": "/private/tmp/rain-client-s0/android-login-20261029/rainclient-login-0.1.0-arm64-dev.apk",
+    "handoff_path": "/private/tmp/rain-client-s0/android-login-20261029/rainclient-login-0.1.0-arm64-dev.apk",
+    "bytes": 16541076,
+    "size_mb_decimal": 16.54,
+    "sha256": "b8bc36024129b4a3cab9c7c76fdbc479bd6756f2c57804a884e6bf62e0276bd6",
+    "application_id": "top.frewily.rainclient.dev",
+    "version_name": "0.1.0",
+    "version_code": 2001,
+    "build_mode": "release",
+    "signing": "development debug keystore, not production signing",
+    "signature_verified": true,
+    "debuggable": false,
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "native_abis": [
+      "arm64-v8a"
+    ],
+    "zip_16kb_alignment_verified": true,
+    "elf_16kb_alignment_verified": true,
+    "original_build_path": "/Users/frewily/projects/Fuck-Yangtze-RainClassroom/apps/client/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk",
+    "artifact_path_note": "Preserved original delivered APK; build output path was subsequently overwritten by a local layout build, not delivered."
+  },
+  "native_alignment": [
+    {
+      "file": "lib/arm64-v8a/libapp.so",
+      "uncompressed_bytes": 4129672,
+      "load_segment_alignment": [
+        65536,
+        65536,
+        65536
+      ],
+      "supports_16kb_alignment": true
+    },
+    {
+      "file": "lib/arm64-v8a/libdartjni.so",
+      "uncompressed_bytes": 131432,
+      "load_segment_alignment": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports_16kb_alignment": true
+    },
+    {
+      "file": "lib/arm64-v8a/libflutter.so",
+      "uncompressed_bytes": 11763360,
+      "load_segment_alignment": [
+        65536,
+        65536,
+        65536
+      ],
+      "supports_16kb_alignment": true
+    }
+  ],
+  "source_evidence": "client-s0-android-login-source.json",
+  "existing_build_tools_reused": {
+    "cmake_version": "3.31.6",
+    "cmake_root": "/Users/frewily/projects/rea/apk-analysis/tools/venv/lib/python3.14/site-packages/cmake/data",
+    "ninja_version": "1.11.1.git.kitware.jobserver-1",
+    "ninja_path": "/Users/frewily/projects/rea/apk-analysis/tools/venv/bin/ninja",
+    "native_host_arm64_verified": true,
+    "rea_files_modified": false,
+    "machine_paths_committed_to_source": false
+  },
+  "additional_android_platform_installed": false,
+  "additional_cmake_or_ninja_installed": false,
+  "sdk_compatibility_result": "Both JNI libraries compile against installed SDK 36; jni uses existing CMake 3.31.6/Ninja through ignored local configuration. Vendor source and runtime minimum API unchanged.",
+  "native_webview_on_real_phone_verified": false,
+  "pending_human_acceptance": [
+    "Install the development APK on the reported OnePlus Android 16 phone",
+    "Official same-phone login and app read-only verification",
+    "Real encrypted storage restore after app relaunch",
+    "Offline recovery and local logout"
+  ]
+}

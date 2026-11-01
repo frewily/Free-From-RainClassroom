@@ -1,0 +1,51 @@
+{
+  "verification": "cloudflare_private_client_pkce_read_only",
+  "evidence_level": "real_account",
+  "source_sha256": "6d6efc43d163c4b3c25d0e5b4e0b5247cb4fa18d4c8ec629268d05836b7056a0",
+  "stage": "passed_authorization_refresh_not_returned",
+  "flow": "authorization_code_pkce",
+  "pkce_method": "S256",
+  "pkce_rfc7636_self_check": true,
+  "client_secret_sent": false,
+  "additional_scopes_requested": false,
+  "requested_scopes": [
+    "user-details.read"
+  ],
+  "callback_state_valid": true,
+  "cleanup_pending": false,
+  "observed_at": "2026-10-27T03:00:44.921Z",
+  "authorization_code_received": true,
+  "token_exchange_http_status": 200,
+  "granted_scopes": [
+    "user-details.read"
+  ],
+  "initial_expires_in": 3599,
+  "refresh_token_present": false,
+  "initial_profile_http_status": 200,
+  "initial_profile_success": true,
+  "initial_profile_valid": true,
+  "access_revoke_http_status": 200,
+  "post_revoke_profile_http_status": 403,
+  "temporary_token_values_discarded": true,
+  "registered_permission": "User Details Read",
+  "initial_missing_scope_consent_permission_count": 0,
+  "corrected_consent_permission_count": 1,
+  "explicit_scope_fix_verified": true,
+  "duplicate_callback_message_observed_by_user": true,
+  "duplicate_callback_behavior": "subsequent_callback_returns_409_after_first_callback_is_accepted",
+  "refresh_test_executed": false,
+  "refresh_limitation": "No refresh token returned for this authorization request and client configuration; refresh support remains unverified.",
+  "cleanup_scope": "Issued access token revoked and rejected by the same profile API; client registration retained. Connected application consent not yet independently inspected.",
+  "test_app_registration_retained": true,
+  "local_probe_stopped": true,
+  "production_resources_modified": false,
+  "classroom_requests_made": false,
+  "not_verified": [
+    "public_cross_account_authorization",
+    "workers_kv_d1_secrets_cron_permissions",
+    "token_refresh",
+    "worker_runtime",
+    "flutter_integration",
+    "android"
+  ]
+}

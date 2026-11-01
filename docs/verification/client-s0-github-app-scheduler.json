@@ -1,0 +1,118 @@
+{
+  "verification": "github_app_selected_repository_scheduler",
+  "functional_result": "passed",
+  "cleanup_result": "user_reported_revocation_not_independently_verified",
+  "recorded_at": "2026-10-27T07:46:03.442Z",
+  "evidence_level": "real_account_and_real_harmless_workflow",
+  "app": {
+    "id": 5489930,
+    "public_client_id": "Iv23li2VecQYTHgNvvHE",
+    "slug": "rain-s0-scheduler-20261027",
+    "visibility_at_registration": "private",
+    "repository_selection": "selected",
+    "permissions": {
+      "actions": "write",
+      "metadata": "read"
+    },
+    "authorized_repositories": [
+      "frewily/rain-client-s0-target-20261027"
+    ]
+  },
+  "source_sha256": {
+    "initial": "29b064ac6c7c21070bd24b9aded342449bd0c89a438d437203457087f9ee1745",
+    "control_continuation": "85822e26e7ee9ae5734b5f9a55bdefba50b504414b4ef904ec561bf919e338ff"
+  },
+  "authorization_sessions": [
+    {
+      "purpose": "initial_refresh_and_target_dispatch",
+      "token_exchange_http_status": 200,
+      "initial_expires_in": 28800,
+      "initial_refresh_token_present": true,
+      "initial_profile_http_status": 200,
+      "refresh_http_status": 200,
+      "access_token_rotated": true,
+      "refresh_token_rotated": true,
+      "refreshed_profile_http_status": 200,
+      "same_identity": true,
+      "old_access_http_status": 401,
+      "client_secret_sent": false,
+      "selected_repository_verified": true
+    },
+    {
+      "purpose": "control_only_continuation",
+      "token_exchange_http_status": 200,
+      "initial_expires_in": 28800,
+      "initial_refresh_token_present": true,
+      "initial_profile_http_status": 200,
+      "refresh_http_status": 200,
+      "access_token_rotated": true,
+      "refresh_token_rotated": true,
+      "refreshed_profile_http_status": 200,
+      "same_identity": true,
+      "old_access_http_status": 401,
+      "client_secret_sent": false,
+      "selected_repository_verified": true
+    }
+  ],
+  "dispatch": {
+    "api_version": "2026-03-10",
+    "target": {
+      "repository": "frewily/rain-client-s0-target-20261027",
+      "requests_sent": 1,
+      "http_status": 200,
+      "total_workflow_runs": 1,
+      "run": {
+        "conclusion": "success",
+        "display_title": "S0 probe af3455f755f570ecfee643ad",
+        "event": "workflow_dispatch",
+        "head_sha": "643a01c40f6ceb4b953036dfc5dcc1f8541193ac",
+        "html_url": "https://github.com/frewily/rain-client-s0-target-20261027/actions/runs/40448466689",
+        "id": 40448466689,
+        "status": "completed"
+      }
+    },
+    "control": {
+      "repository": "frewily/rain-client-s0-control-20261027",
+      "requests_sent": 1,
+      "http_status": 403,
+      "request_denied": true,
+      "total_workflow_runs": 0
+    },
+    "target_not_retried": true,
+    "fixture_sha256": "d7349007d247f4f2e698f55e02755407eb15016f42381967776c8257ac566abe"
+  },
+  "test_harness_correction": {
+    "initial_error": "Expected legacy HTTP 204 despite using API version 2026-03-10, which returns 200 with run details.",
+    "confirmation": "Official documentation and the matching successful workflow run confirm target acceptance.",
+    "recovery": "Reused the same target run and sent only the previously unattempted control request in a second authorization session."
+  },
+  "cleanup": {
+    "user_reported_revoke_all_user_tokens": true,
+    "revocation_profile_check_executed": false,
+    "revocation_independently_verified": false,
+    "reason": "The original checks were not executed because automatic approval review hit the usage limit. Both probes reached their 30-minute retention timeout and discarded token references before resumption.",
+    "credential_values_not_saved": true,
+    "temporary_token_references_discarded": true,
+    "memory_retention_timeouts_observed": true,
+    "local_probes_stopped": true,
+    "ports_8765_and_8766_listening": false,
+    "test_app_registration_retained": true,
+    "test_repositories_retained": true
+  },
+  "production": {
+    "business_checkout_head": "e2a16afbc2f58c0ab524491af0e5a738cf087b92",
+    "business_code_modified": false,
+    "business_repository_committed_or_pushed": false,
+    "production_cloudflare_modified": false,
+    "classroom_requests_made": false
+  },
+  "not_verified": [
+    "refresh_after_waiting_eight_hours",
+    "worker_runtime_refresh_and_dispatch",
+    "concurrent_refresh_and_response_loss_recovery",
+    "public_github_app_cross_account_authorization",
+    "repository_contents_workflows_secrets_administration_management",
+    "cloudflare_deployment_permissions",
+    "flutter_and_android"
+  ]
+}

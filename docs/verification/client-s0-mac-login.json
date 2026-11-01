@@ -1,0 +1,22 @@
+{
+  "cleanup_observed_at": "2026-10-26T02:27:08Z",
+  "last_page_host": "changjiang.yuketang.cn",
+  "last_page_path": "/v2/web/index",
+  "native_probe_source_sha256": "ecc9d8001052facfd22b67a6661772f68eee158e8405eeeb75244e3107111948",
+  "observed_at": "2026-10-26T02:26:13Z",
+  "page_loaded": true,
+  "persistent_cookie_store": false,
+  "probe": "macOS WKWebView",
+  "scope": "macOS native WKWebView plus independent ephemeral URLSession; not Flutter or Android",
+  "session_cookie_http_only": true,
+  "session_cookie_present": true,
+  "session_cookie_secure": true,
+  "synthetic_http_only_cookie_roundtrip": true,
+  "temporary_session_cleared": true,
+  "userinfo_has_identity_record": true,
+  "userinfo_http_status": 200,
+  "userinfo_json": true,
+  "userinfo_network_error": false,
+  "userinfo_requested": true,
+  "userinfo_session_accepted": true
+}

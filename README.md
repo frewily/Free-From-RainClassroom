@@ -277,6 +277,12 @@ GitHub Actions 用户将值保存为仓库 Secret `SESSION`；本地 / 服务器
 
 本项目基于开源项目[Fuck-Yangtze-RainClassroom](https://github.com/Chiu-xaH/Fuck-Yangtze-RainClassroom)进行改进，感谢原作者的开源贡献！如果觉得本项目配置复杂，也可以尝试原项目的方法配置。
 
+## 安卓管理客户端（开发验证版）
+
+客户端源码位于 [apps/client](apps/client/README.md)。当前 0.3.4 已完成安卓雨课堂登录、GitHub 绑定，以及 Cloudflare 官方授权 → 应用内测试部署 → 空任务真实成功 → 手机显示结果并关闭测试入口的验证，113 项客户端本地测试通过。
+
+目前仅供本人账号和指定空测试仓库开发验证，尚未接入真实课表／课堂、自动 Fork、公开跨账号发行或 Mac Flutter 客户端。开发构建仍使用开发签名，具体边界及证据见[本轮实测记录](docs/client-app-android-callback-fix.md)。
+
 ## 开发验证：离线自动化测试
 
 推送代码或创建、更新 PR 后，`Offline tests` 会分别运行 Python 3.10、Python 3.14 和 Node.js 24 的测试。Python 3.10 与当前监听工作流一致；两个 Python 版本分别报告结果，不因其中一个失败而取消另一个。

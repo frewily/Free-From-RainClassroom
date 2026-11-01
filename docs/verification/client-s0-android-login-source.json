@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-29",
+  "source_root": "apps/client",
+  "files_sha256": {
+    "lib/main.dart": "b6cb072299af45d8f6ebb9b9a23ad079b504f48860360be4e3d414b792c8de2f",
+    "lib/login_page.dart": "800df3db344efaa78a9fd8d569d02c831d772dd7434b06fdda374400f0b82553",
+    "lib/auth/session_controller.dart": "f3f452c98aaf4b830c86c6a5a6df8cc8e4eed5ac2682c93258e6208c48903844",
+    "lib/auth/session_cookie.dart": "1d00b355e1ee0f4f5617c14fcc2f52890f354ce833a9936346596501e99a359e",
+    "lib/auth/login_navigation.dart": "9840d4427b6f8ea0a671b9c9ea49d8e2181b6e428c20ccf79c14d5fecb9d6501",
+    "lib/auth/session_store.dart": "f24e6c8dfc963f8e2035bd0faa3a7c37f8edca6649ff1b50173abdbc86a5691b",
+    "lib/auth/session_client.dart": "4ded68bbf7caab9086d51892421df0e1438d09a93d488e2018aae9dedf4c6e2a",
+    "lib/auth/cookie_reader.dart": "7fabf838dd2bbf3ca32afba9b0ff26187cf44d2d4678c6530e013ac70c0297d7",
+    "test/session_controller_test.dart": "16ca80e9a412562bc02f6ccfcb977c54cba748572f2168c48cd3fb7f45e164f1",
+    "test/session_client_test.dart": "8aa309a48cffb6250412229d84d8e262c2067f1b6abb5879a39213bcd6be399d",
+    "test/auth_fakes.dart": "ebf7cfff9c16f3952bd4270ca78af0f12cc998f3cfa931a530d29c6ccdce5b7c",
+    "test/session_cookie_test.dart": "ce43f954d6bff699c02bc93638599cdad2e749de1f0b1775b84fb698e25abb75",
+    "test/login_page_test.dart": "875a16881c2dbb8c24212404f451aea7480ea0fde4fbe76056dcd940a113953d",
+    "pubspec.yaml": "bcd91993baf58c479912bd57280723c780a795e689aecb092ca0a41cd2115a3a",
+    "pubspec.lock": "6c6147d221ed1aadbcac2f5383924e0a23b8d884e9b4dc6dbf885b146c8e0ed7",
+    "android/app/build.gradle.kts": "28a54848d4df46f7eb26f2e6989d24eb424331429a0e283ba6fe817654b6fd93",
+    "android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+    "android/gradle.properties": "e519b990eef645cb40209e92933ba9b0f7b141a3c818dde4f1a453ee4c100c1d",
+    "android/gradle/wrapper/gradle-wrapper.properties": "4cbe14060ba54f3733879c578450a8fe15efce6e0cf154e862453a46e538df11",
+    "android/app/src/main/AndroidManifest.xml": "807e378e751083a3bc1d56bc0e164b67a097b3bff692bc792fed7d009084969a",
+    "android/app/src/main/kotlin/top/frewily/rainclient/MainActivity.kt": "99d93b8e871dd4f6b50528e4bcbe81869c1653ed6cd2e3b77081451bd7ec4b0c",
+    "android/app/src/main/res/xml/data_extraction_rules.xml": "708b4a6bbf55a93afc4f64284d153a4778321ac7dd8d9de891f449f7a64a33e8"
+  },
+  "apk_sha256": "b8bc36024129b4a3cab9c7c76fdbc479bd6756f2c57804a884e6bf62e0276bd6",
+  "credentials_or_signing_keys_included": false
+}

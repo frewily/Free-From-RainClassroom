@@ -1,0 +1,24 @@
+name: Rain Client S0 Probe
+run-name: S0 probe ${{ inputs.probe_nonce }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe_nonce:
+        description: Synthetic identifier for this authorization test
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Confirm harmless workflow execution
+        env:
+          S0_PROBE_NONCE: ${{ inputs.probe_nonce }}
+        run: |
+          test -n "$S0_PROBE_NONCE"
+          echo "S0 dispatch probe completed."

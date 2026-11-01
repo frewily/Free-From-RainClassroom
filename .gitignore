@@ -16,6 +16,11 @@ eggs/
 .eggs/
 lib/
 lib64/
+# Flutter source directories are not Python build outputs.
+!apps/client/lib/
+!apps/client/lib/**
+!docs/verification/flutter-device-probe/lib/
+!docs/verification/flutter-device-probe/lib/**
 parts/
 sdist/
 var/

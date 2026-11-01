@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-28",
+  "evidence": "Read-only ZIP entry sizes in the actual debug APK",
+  "apk_sha256": "5f02923b7a32563a6aeb7dc3514bba9c45bf67103b3510da21cae071c58fca63",
+  "total_bytes": 150352414,
+  "debug_build": true,
+  "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86_64"
+  ],
+  "flutter_engine_bytes_across_abis": 112113372,
+  "graphics_validation_layer_bytes": 15240080,
+  "flutter_debug_assets_bytes": 19995386,
+  "other_entries_and_zip_alignment_bytes": 3003576,
+  "release_size_measured": false,
+  "apk_modified": false,
+  "observed_at": "2026-10-28T14:30:52.144463+00:00"
+}

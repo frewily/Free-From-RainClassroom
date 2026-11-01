@@ -1,0 +1,277 @@
+{
+  "date": "2026-10-29",
+  "stage": "implemented_apk_ready_real_phone_acceptance_pending",
+  "new_dependencies_approved": true,
+  "new_dependencies_installed": true,
+  "plugin_archives_downloaded": true,
+  "implementation_started": true,
+  "phone": {
+    "model": "OnePlus Ace 5 Supreme Edition",
+    "reported_name": "一加 Ace5 至尊版",
+    "android_version": "16",
+    "evidence": "User supplied model and Android version",
+    "independently_checked": false
+  },
+  "existing_toolchain": {
+    "flutter": "3.47.8",
+    "dart": "3.13.7",
+    "android_compile_sdk": 36,
+    "android_min_sdk": 24,
+    "java": "17",
+    "xcode_present": false
+  },
+  "proposed_project": "apps/client",
+  "proposed_debug_application_id": "top.frewily.rainclient.dev",
+  "proposed_label": "雨课堂管理 · 开发版",
+  "proposed_direct_dependencies": [
+    {
+      "name": "webview_flutter",
+      "version": "4.14.1",
+      "archive_sha256": "d53e1ccf5516f25017e3c9d44c39034db352d20fa34fe200674270242c2c5111",
+      "archive_url": "https://pub.dev/api/archives/webview_flutter-4.14.1.tar.gz",
+      "environment": {
+        "sdk": "^3.10.0",
+        "flutter": ">=3.38.0"
+      },
+      "dependencies": {
+        "flutter": {
+          "sdk": "flutter"
+        },
+        "webview_flutter_android": "^4.12.0",
+        "webview_flutter_platform_interface": "^2.15.1",
+        "webview_flutter_wkwebview": "^3.25.1"
+      },
+      "platforms": {
+        "android": {
+          "default_package": "webview_flutter_android"
+        },
+        "ios": {
+          "default_package": "webview_flutter_wkwebview"
+        },
+        "macos": {
+          "default_package": "webview_flutter_wkwebview"
+        }
+      }
+    },
+    {
+      "name": "webview_flutter_android",
+      "version": "4.14.1",
+      "archive_sha256": "4de8b3d1ff4ebe1bdb42e68a5e4f809194a3cb0117a8f495f590004f00da3964",
+      "archive_url": "https://pub.dev/api/archives/webview_flutter_android-4.14.1.tar.gz",
+      "environment": {
+        "sdk": "^3.12.0",
+        "flutter": ">=3.44.0"
+      },
+      "dependencies": {
+        "flutter": {
+          "sdk": "flutter"
+        },
+        "meta": "^1.10.0",
+        "webview_flutter_platform_interface": "^2.15.1"
+      },
+      "platforms": {
+        "android": {
+          "package": "io.flutter.plugins.webviewflutter",
+          "pluginClass": "WebViewFlutterPlugin",
+          "dartPluginClass": "AndroidWebViewPlatform"
+        }
+      }
+    },
+    {
+      "name": "flutter_secure_storage",
+      "version": "11.2.0",
+      "archive_sha256": "d4e1fb6b2cb524868929e78dc0282fa000554b22060fb53789dc481c9fc95bb8",
+      "archive_url": "https://pub.dev/api/archives/flutter_secure_storage-11.2.0.tar.gz",
+      "environment": {
+        "sdk": ">=3.8.0 <4.0.0",
+        "flutter": ">=3.19.0"
+      },
+      "dependencies": {
+        "flutter": {
+          "sdk": "flutter"
+        },
+        "flutter_secure_storage_darwin": "^0.4.0",
+        "flutter_secure_storage_linux": ">=3.0.1 <5.0.0",
+        "flutter_secure_storage_platform_interface": "^2.1.0",
+        "flutter_secure_storage_web": "^2.1.1",
+        "flutter_secure_storage_windows": "^4.2.2",
+        "meta": "^1.16.0"
+      },
+      "platforms": {
+        "android": {
+          "package": "com.it_nomads.fluttersecurestorage",
+          "pluginClass": "FlutterSecureStoragePlugin"
+        },
+        "ios": {
+          "default_package": "flutter_secure_storage_darwin"
+        },
+        "macos": {
+          "default_package": "flutter_secure_storage_darwin"
+        },
+        "linux": {
+          "default_package": "flutter_secure_storage_linux"
+        },
+        "web": {
+          "default_package": "flutter_secure_storage_web"
+        },
+        "windows": {
+          "default_package": "flutter_secure_storage_windows"
+        }
+      }
+    },
+    {
+      "name": "url_launcher",
+      "version": "6.3.3",
+      "archive_sha256": "e8cc955c97e06df9879140a1fe301f3d493f01b7c62dec7f46834be31d7e9fda",
+      "archive_url": "https://pub.dev/api/archives/url_launcher-6.3.3.tar.gz",
+      "environment": {
+        "sdk": "^3.11.0",
+        "flutter": ">=3.41.0"
+      },
+      "dependencies": {
+        "flutter": {
+          "sdk": "flutter"
+        },
+        "url_launcher_android": "^6.3.0",
+        "url_launcher_ios": "^6.2.4",
+        "url_launcher_linux": "^3.1.0",
+        "url_launcher_macos": "^3.1.0",
+        "url_launcher_platform_interface": "^2.3.0",
+        "url_launcher_web": "^2.2.0",
+        "url_launcher_windows": "^3.1.0"
+      },
+      "platforms": {
+        "android": {
+          "default_package": "url_launcher_android"
+        },
+        "ios": {
+          "default_package": "url_launcher_ios"
+        },
+        "linux": {
+          "default_package": "url_launcher_linux"
+        },
+        "macos": {
+          "default_package": "url_launcher_macos"
+        },
+        "web": {
+          "default_package": "url_launcher_web"
+        },
+        "windows": {
+          "default_package": "url_launcher_windows"
+        }
+      }
+    }
+  ],
+  "capabilities_documented": {
+    "published_webview_cookie_getter": {
+      "package": "webview_flutter",
+      "version": "4.14.1",
+      "tag_commit": "b79b35409f67bcbd14e66760fb64380328bd4a0a",
+      "blob_sha": "f28f24ec1b71ba0726e09f325ca0a25ac5541a04",
+      "versioned_api": "https://pub.dev/documentation/webview_flutter/4.14.1/webview_flutter/WebViewCookieManager/getCookies.html"
+    },
+    "android_native_cookie_api": {
+      "package_version": "4.14.1",
+      "tag_commit": "9854cd5607da4001f2dd3cbdcd6903202d28958c",
+      "native_blob_sha": "38fd34f6690530689e2b13c1972365636a9631ab",
+      "method": "android.webkit.CookieManager.getCookie",
+      "minimum_android_api": 24,
+      "build_java": 17,
+      "androidx_webkit": "1.15.0"
+    },
+    "android_cookie_parser_boundary": {
+      "blob_sha": "25fd0aa68abe413ffbc035820d63e0b063a95e1a",
+      "observed_implementation": "cookie.split('=') and cookieValue.last",
+      "issue": "Cookie values containing equals signs can be truncated",
+      "planned_response": "Use a narrowly scoped Android MethodChannel to read the app WebView cookie header for one fixed HTTPS rain-classroom origin; parse at the first equals sign in tested Dart code. Do not modify the published plugin."
+    },
+    "secure_storage": {
+      "package_version": "11.2.0",
+      "canonical_repository": "juliansteenbakker/flutter_secure_storage",
+      "tag_commit": "805638be8ab37d1a08c3bc54c9e61b48555c6c3f",
+      "readme_blob_sha": "adcb1a755c4f6393b3becb90663ffefc6bfdb777",
+      "minimum_android_api": 23,
+      "default_ciphers": "RSA OAEP wrapping and AES-GCM",
+      "planned_options": {
+        "resetOnError": false,
+        "enforceBiometrics": false,
+        "storageNamespace": "top.frewily.rainclient.dev.rainclass"
+      },
+      "android_backup_disabled_for_dev_app": true
+    }
+  },
+  "proposed_network": {
+    "login_url": "https://changjiang.yuketang.cn/web",
+    "session_check_url": "https://changjiang.yuketang.cn/v2/api/web/userinfo",
+    "method": "GET",
+    "credential": "Only the sessionid acquired in the app official login container",
+    "requests_allowed_after_confirmation": [
+      "Read-only valid-session verification",
+      "Read-only no-session or synthetic invalid-session controls"
+    ],
+    "credential_transfer_to_github_or_cloudflare": false
+  },
+  "proposed_data_storage": {
+    "real_session": "Android Keystore-supported app-private encrypted storage and temporary memory",
+    "original_profile_json_retained": false,
+    "session_or_oauth_code_logged": false,
+    "local_logout_only": true
+  },
+  "owner_decisions_pending": [],
+  "implementation_files_proposed": [
+    "apps/client/lib/main.dart",
+    "apps/client/lib/login_page.dart",
+    "apps/client/lib/auth/session_controller.dart",
+    "apps/client/lib/auth/session_client.dart",
+    "apps/client/lib/auth/session_store.dart",
+    "apps/client/lib/auth/cookie_reader.dart",
+    "apps/client/android/app/src/main/kotlin/top/frewily/rainclient/MainActivity.kt",
+    "apps/client/android/app/src/main/AndroidManifest.xml",
+    "apps/client/pubspec.yaml",
+    "apps/client/pubspec.lock"
+  ],
+  "important_unknowns": [
+    "Same-phone official login and return into the same WebView cookie store",
+    "The service exact invalid-session response and business code",
+    "Physical Android secure-storage restore and deletion",
+    "Mac Flutter build and SwiftPM integration after Xcode is available"
+  ],
+  "not_started": [
+    "Plugin installation",
+    "Client source or APK implementation",
+    "Real session capture or persistence",
+    "Official account login or new platform grants",
+    "Production or cloud configuration changes",
+    "Git commit or push"
+  ],
+  "public_metadata_sha256": {
+    "flutter_secure_storage_darwin.json": "6791a53dfda97e6eed57f02f412493b543d98914465841fb22f23d852dc13291",
+    "secure-storage-android-options.html": "e99b4c0e296684e6f7bb35a8aed9f894a1fb1391e2921dbf2a77b6687a4c8fc1",
+    "webview_flutter_android.json": "0803196c43ef211cf155a3fd40998ca6118954c3656b3607d485ba13bcb94eb6",
+    "flutter_inappwebview.json": "d712bc9f2fc1a29de150f776d6ea2e214519bae591839ad0bc678361449773e3",
+    "url_launcher.json": "e6a55aeab226c88ec5a3ddb1c33a22681368830365fe998cc6640f3e02d0434b",
+    "flutter_secure_storage.json": "7715bdd51bbe7ac4e810552c5846333c7a442b4571faa6d3d7594ca6b69e3fd0",
+    "webview_flutter_wkwebview.json": "dc3c7766eb099070a68a42b61f10ec3cf62db95236eaaca839f6347aba06afa2",
+    "secure-storage-api.html": "085733c2f56cdfdb458c200e79d32775484cddd92c2b57ce4c601f3526486dff",
+    "webview_flutter.json": "450a4a0700c5ed83f0686307985d4811f2dfd67daca68a4fe48fe2d4c98be343",
+    "secure-storage-android-options.txt": "9285fab6b1afcb2e94406a7ac8955650e58f545376eba196c99b370f0a8ff3ea",
+    "webview-cookie-api.html": "2825279e488bb649de6642df7d3f01d6306a5475db4923a40aad798c89363038",
+    "secure-repository-redirect.headers": "726783fb8279f42649f6270dfcd4349760821f74858eefbfa96102525aa7c311"
+  },
+  "observed_at": "2026-10-29T02:44:48.882042+00:00",
+  "source_read_notes": [
+    "Published webview API and release tag both verified",
+    "Android published tag uses native CookieManager.getCookie; wrapper equals-sign parsing boundary recorded",
+    "Secure-storage repository moved from mogol to juliansteenbakker; release tag verified at canonical repository",
+    "A failed anonymous API/HTML fallback was not used as capability evidence"
+  ],
+  "owner_behavior_confirmed": {
+    "local_logout_separate_from_cloud_stop": true,
+    "evidence": "User selected the recommended separate-local-logout behavior",
+    "confirmed_at": "2026-10-29T02:58:42.511957+00:00"
+  },
+  "environment_audit_evidence": "client-s0-existing-toolchains-20261029.json",
+  "reuse_existing_shared_sdk_confirmed": true,
+  "approval_evidence": "User explicitly allowed reuse of existing tooling, adding the listed plugins and implementing the Android login slice",
+  "approved_at": "2026-10-29T03:28:34.374176+00:00"
+}

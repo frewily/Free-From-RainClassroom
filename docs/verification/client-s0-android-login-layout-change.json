@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-29",
+  "stage": "source_changed_local_checks_passed_phone_visual_acceptance_deferred",
+  "files_changed": [
+    "apps/client/lib/login_page.dart"
+  ],
+  "login_page_sha256": "df42e1f7074908588b567ebd0dffb1c846d2e7cbc7fc2b2db451c623b51aa7af",
+  "cause": {
+    "official_wrapper_width_px": 950,
+    "official_login_card_width_px": 416,
+    "plugin_wide_viewport_default": false,
+    "user_report": "Page too wide; content clipped and horizontal scrolling required"
+  },
+  "change": "Enable Android viewport metadata support; on page completion add CSS scoped to the official HTTPS login DOM and widths <=600px; no credential values or network requests inspected or changed",
+  "offline_reproduction": {
+    "fixture": "Public official CSS and template with no scripts or remote resources; synthetic display state",
+    "viewport_px": 390,
+    "original_document_width_px": 958,
+    "patched_document_width_px": 390,
+    "tested_widths_px": [
+      320,
+      360,
+      390,
+      430,
+      600,
+      1280
+    ],
+    "login_modes": [
+      "qr",
+      "account"
+    ],
+    "all_patched_document_widths_equal_viewport": true,
+    "visible_inputs_within_viewport": true,
+    "is_real_android_webview": false
+  },
+  "analysis_passed": true,
+  "existing_tests_passed": 26,
+  "new_dependencies": false,
+  "build_completed_before_latest_user_instruction": true,
+  "new_apk_handed_to_user": false,
+  "phone_visual_retest_requested": false,
+  "owner_instruction": "小问题，不需要再重新弄一个安装包来验证；改好留待下次查看，优先把完整项目跑通。",
+  "phone_visual_acceptance": "deferred to next functional release",
+  "git_commit_or_push_performed": false,
+  "next_functional_slice": "GitHub binding and repository identification; then Cloudflare connection and deployment configuration"
+}

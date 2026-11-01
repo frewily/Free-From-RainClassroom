@@ -1,0 +1,50 @@
+{
+  "verification": "standalone_worker_probe_preparation",
+  "prepared_at": "2026-10-27T08:14:46.586Z",
+  "status": "live_verification_passed_and_closed",
+  "source_sha256": {
+    "worker.mjs": "c7278017633ebd70135eb162278e421ca4d0af2e2dbeceb4392b5531b18fe5e1",
+    "controller.mjs": "f75c2ad159fbe2343fc8907246707876bc6ce1b63ecae2dba1d37bce89c1496b",
+    "worker.test.mjs": "085f09593fe704d6cf8d90047b07b034b844d9a2eb68199b68fc3ce2662f7858"
+  },
+  "local_check": {
+    "runtime": "v24.15.0",
+    "runner": "node --test",
+    "tests_passed": 15,
+    "tests_failed": 0,
+    "inputs": "synthetic_only",
+    "external_requests_sent": false
+  },
+  "cloudflare_worker_name": "rain-client-s0-worker-20261027",
+  "cloudflare_worker_created": true,
+  "github_live_credentials_obtained": true,
+  "github_credentials_transferred_to_cloudflare": true,
+  "cloud_runtime_verified": true,
+  "expected_additional_target_dispatch_requests": 1,
+  "expected_control_dispatch_requests": 0,
+  "planned_persistent_worker_secrets": [
+    "PROBE_KEY"
+  ],
+  "github_tokens_persisted_to_cloud_storage": false,
+  "production_resources_modified": false,
+  "live_test_approval_received": true,
+  "approval_scope": {
+    "worker": "rain-client-s0-worker-20261027",
+    "secret": "PROBE_KEY",
+    "temporary_github_credentials_https_roundtrip": true,
+    "additional_target_dispatch_requests": 1,
+    "control_dispatch_requests": 0
+  },
+  "updated_at": "2026-10-27T08:27:54.195Z",
+  "final_offline_checks": {
+    "tests_passed": 20,
+    "tests_failed": 0,
+    "source_sha256": {
+      "worker-runtime.mjs": "5a65621b0d35dd6aa9bc7da98e0c4b93ff4fe5ef79e4a32daedaff4f305120b0",
+      "controller.mjs": "5aadfaf32eefb6e28f61fcec9f18b17238d522f6a8849ebf935f18fe0377e876",
+      "worker.test.mjs": "ef933533aaadd5acc72cd72796fc8b7ea99cfb71fab810eb807d5bd52dec24f9"
+    }
+  },
+  "runtime_evidence": "client-s0-worker-runtime.json",
+  "closed_at": "2026-10-28T01:51:47.922Z"
+}

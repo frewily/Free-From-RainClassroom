@@ -1,0 +1,84 @@
+{
+  "identity_kind": "existing_owner_cli_parameter_control",
+  "not_manager_app_capability_evidence": true,
+  "workflow_dispatches": 0,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/user",
+      "http_status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/commits/main",
+      "http_status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/runs?per_page=100",
+      "http_status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 409
+    },
+    {
+      "method": "GET",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 204
+    },
+    {
+      "method": "GET",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 204
+    },
+    {
+      "method": "GET",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 200
+    }
+  ],
+  "policy_baseline": {
+    "enabled": true,
+    "allowed_actions": "all",
+    "sha_pinning_required": false
+  },
+  "original_payload_http_status": 409,
+  "same_error_as_manager_app": true,
+  "policy_error_mentions": {
+    "allowed_actions": false,
+    "sha_pinning_required": false,
+    "enabled": false,
+    "disabled": false,
+    "GitHub Actions": false
+  },
+  "enabled_only_payload_http_status": 204,
+  "policy_after_enabled_only_payload": {
+    "enabled": false,
+    "sha_pinning_required": false
+  },
+  "restore_http_status": 204,
+  "policy_restored": true,
+  "verified_error_message": "Conflict"
+}

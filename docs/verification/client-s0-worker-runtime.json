@@ -1,0 +1,119 @@
+{
+  "verification": "cloudflare_worker_github_app_refresh_and_dispatch",
+  "execution_date": "2026-10-27",
+  "closeout_date": "2026-10-28",
+  "recorded_at": "2026-10-28T01:51:47.920Z",
+  "evidence_level": "real_cloudflare_worker_and_real_harmless_github_workflow",
+  "functional_result": "passed",
+  "cleanup_result": "verified_for_successful_session_and_public_endpoint",
+  "worker": {
+    "name": "rain-client-s0-worker-20261027",
+    "url": "https://rain-client-s0-worker-20261027.2994508531.workers.dev",
+    "build": "rain-s0-worker-github-20261027-v3",
+    "local_deployment_source_sha256": "5a65621b0d35dd6aa9bc7da98e0c4b93ff4fe5ef79e4a32daedaff4f305120b0",
+    "gate_verified": true,
+    "expected_permissions_validated": {
+      "actions": "write",
+      "metadata": "read",
+      "selected_repositories": [
+        "frewily/rain-client-s0-target-20261027"
+      ]
+    }
+  },
+  "source_sha256": {
+    "worker-runtime.mjs": "5a65621b0d35dd6aa9bc7da98e0c4b93ff4fe5ef79e4a32daedaff4f305120b0",
+    "controller.mjs": "5aadfaf32eefb6e28f61fcec9f18b17238d522f6a8849ebf935f18fe0377e876",
+    "worker.test.mjs": "ef933533aaadd5acc72cd72796fc8b7ea99cfb71fab810eb807d5bd52dec24f9"
+  },
+  "source_of_refresh": "cloudflare_worker",
+  "github_refresh_executed_locally": false,
+  "worker_response_http_status": 200,
+  "worker_summary": {
+    "build": "rain-s0-worker-github-20261027-v3",
+    "nonce": "257c4f636757c8597033e1fa",
+    "api_version": "2026-03-10",
+    "client_secret_sent": false,
+    "dispatch_attempted": true,
+    "selected_repository_verified": true,
+    "fixture_verified": true,
+    "initial_profile_http_status": 200,
+    "refresh_http_status": 200,
+    "access_token_rotated": true,
+    "refresh_token_rotated": true,
+    "refreshed_profile_http_status": 200,
+    "same_identity": true,
+    "old_access_http_status": 401,
+    "dispatch_http_status": 200,
+    "workflow_run_id": 40510756580,
+    "workflow_run_url": "https://github.com/frewily/rain-client-s0-target-20261027/actions/runs/40510756580"
+  },
+  "returned_pair_local_profile_http_status": 200,
+  "run": {
+    "conclusion": "success",
+    "display_title": "S0 probe 257c4f636757c8597033e1fa",
+    "event": "workflow_dispatch",
+    "head_sha": "643a01c40f6ceb4b953036dfc5dcc1f8541193ac",
+    "html_url": "https://github.com/frewily/rain-client-s0-target-20261027/actions/runs/40510756580",
+    "id": 40510756580,
+    "status": "completed"
+  },
+  "requests": {
+    "cloud_probe_posts_total": 2,
+    "first_post_failed_before_refresh_and_dispatch": true,
+    "successful_post_count": 1,
+    "github_dispatch_requests_total": 1,
+    "automatic_dispatch_retries": 0,
+    "control_dispatch_requests": 0
+  },
+  "run_counts_at_2026_10_27_closeout": {
+    "target_before": 1,
+    "target_after": 2,
+    "control_before": 0,
+    "control_after": 0,
+    "readback_observed_at": "2026-10-27T13:20:31.910003+00:00"
+  },
+  "cleanup": {
+    "successful_session_revocation_http_status": 401,
+    "successful_session_revocation_independently_verified": true,
+    "temporary_token_references_discarded": true,
+    "local_probe_stopped": true,
+    "origin_diagnostic_server_stopped": true,
+    "ports_8765_and_8770_listening": false,
+    "public_workers_dev_disabled": true,
+    "public_health_http_status": 404,
+    "public_health_rechecked_on": "2026-10-28",
+    "preview_urls_observed_disabled": true,
+    "worker_registration_retained": true,
+    "call_gate_secret_retained_in_disabled_test_worker": true,
+    "github_app_and_test_repositories_retained": true,
+    "failed_initial_session_revocation_user_reported": true,
+    "failed_initial_session_revocation_independently_verified": false
+  },
+  "privacy": {
+    "github_credentials_written_to_files_or_repository": false,
+    "github_credentials_stored_in_worker_secrets_kv_or_d1": false,
+    "github_credentials_handled_temporarily_by_worker_and_local_controller": true,
+    "program_logs_contain_credential_values": false,
+    "private_key_or_client_secret_sent": false
+  },
+  "bootstrap": {
+    "method": "user_cloudflare_dashboard",
+    "cloudflare_oauth_deployment_permissions_tested": false,
+    "new_kv_d1_durable_objects_or_cron": false,
+    "software_or_sdk_installed": false
+  },
+  "production": {
+    "business_checkout_head": "e2a16afbc2f58c0ab524491af0e5a738cf087b92",
+    "business_code_modified": false,
+    "production_worker_or_secrets_or_cron_modified": false,
+    "classroom_requests_made": false,
+    "business_repository_committed_or_pushed": false
+  },
+  "known_limits": [
+    "Immediate refresh within one request; did not wait eight hours.",
+    "No persistent refreshed-token storage, recurring Cron, client-offline long-term scheduling, concurrent refresh or response-loss recovery tested.",
+    "No Cloudflare OAuth resource deployment or public cross-account authorization tested.",
+    "No Flutter, Android or full client deployment workflow tested."
+  ],
+  "debug_evidence": "client-s0-worker-debug.json"
+}

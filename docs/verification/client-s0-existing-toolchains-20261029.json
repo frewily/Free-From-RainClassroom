@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-29",
+  "scope": "Read-only local toolchain inventory requested before login dependency installation",
+  "sdk_or_plugin_installation_performed": false,
+  "other_project_modified": false,
+  "usable_shared_flutter": {
+    "path": "/Users/frewily/Library/Developer/flutter/3.47.8",
+    "framework_version": "3.47.8",
+    "dart_version": "3.13.7",
+    "revision": "737ba8f885dc774b53b442759999a312c9461e4e",
+    "dart_binary_cached": true,
+    "flutter_tool_snapshot_cached": true,
+    "created_at_utc": "2026-10-28T12:44:36.776070+00:00",
+    "version_evidence": "Local flutter.version.json, Dart version file and prior successful APK build; no initialization was run during this audit"
+  },
+  "privatevault_flutter_checkout": {
+    "path": "/Users/frewily/projects/privateVault/.tools/flutter",
+    "is_symlink": false,
+    "revision": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+    "declared_version": "3.47.5",
+    "version_evidence": "PrivateVault W01 proposal maps this official version to the same fixed commit",
+    "dart_binary_cached": false,
+    "flutter_tool_snapshot_cached": false,
+    "created_at_utc": "2026-10-29T02:44:23.245193+00:00",
+    "classification": "Separate source checkout with incomplete runtime/tool cache, not a confirmed usable second installation",
+    "initialization_or_build_run_by_this_audit": false
+  },
+  "shared_android_sdk": {
+    "path": "/Users/frewily/Library/Android/sdk",
+    "platform_api": 36,
+    "build_tools": "36.0.0",
+    "command_line_tools": "22.0",
+    "platform_tools": "37.0.1",
+    "ndk": "28.2.13676358"
+  },
+  "java_available": {
+    "17": "/opt/homebrew/opt/openjdk@17",
+    "23": "/opt/homebrew/opt/openjdk"
+  },
+  "full_xcode_standard_path_present": false,
+  "android_studio_standard_path_present": false,
+  "current_shell": {
+    "flutter_on_default_path": false,
+    "dart_on_default_path": false,
+    "android_tools_on_default_path": false,
+    "reason": "Shared SDK paths are selected per process/project; previous installation did not change global shell startup files"
+  },
+  "pending_login_plugins": {
+    "already_added_to_rain_client": false,
+    "selected_versions_found_in_rain_client_pub_cache": false,
+    "sdk_reinstallation_required": false
+  },
+  "audit_limits": [
+    "Checked common tool locations, repository-local tool checkout, targeted project metadata and shell/IDE settings",
+    "Spotlight returned no SDK entries, including the known shared one, so its index was not used as proof of absence",
+    "This is not an exhaustive whole-disk search"
+  ],
+  "recommendation": "Reuse the already working shared Flutter 3.47.8/Dart 3.13.7 and Android SDK for RainClient; leave the other project pinned checkout untouched. Only project-level login plugins remain proposed.",
+  "observed_at": "2026-10-29T03:19:04.864257+00:00"
+}

@@ -1,0 +1,179 @@
+{
+  "research_date": "2026-10-27",
+  "recorded_at": "2026-10-27T03:23:33.427Z",
+  "evidence_level": "official_documentation_only",
+  "sources": [
+    {
+      "name": "gh-scopes",
+      "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+      "text_snapshot_sha256": "a25cbf2b8845da2e596573705c03426e86702fa44688979480885e6494c9fef3"
+    },
+    {
+      "name": "gh-app-comparison",
+      "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps",
+      "text_snapshot_sha256": "698baf8630f59fc79e19062fc36ddb42d3883bd8dc29f9bb5dc638238d7060b5"
+    },
+    {
+      "name": "gh-fork-rendered",
+      "url": "https://docs.github.com/en/rest/repos/forks",
+      "text_snapshot_sha256": "ad5abc46a52346dac5df17d8b071c969d66cce9b984ad999c6937bccb60e12b2"
+    },
+    {
+      "name": "gh-secrets-rendered",
+      "url": "https://docs.github.com/en/rest/actions/secrets",
+      "text_snapshot_sha256": "8a4fcf18c08624815e7057fcf874bbf2308453f9cad5f40f24352bc66012994e"
+    },
+    {
+      "name": "gh-contents-rendered",
+      "url": "https://docs.github.com/en/rest/repos/contents",
+      "text_snapshot_sha256": "8a61dfab9dde5b593dc222546b1a3e67ae5eb17c68834dd08f2af5f0fc548b3e"
+    },
+    {
+      "name": "gh-workflows-rendered",
+      "url": "https://docs.github.com/en/rest/actions/workflows",
+      "text_snapshot_sha256": "6c74de9a551405dd036b6f47f1a2ccc222b4a828b65f9cce054093be23279bb7"
+    },
+    {
+      "name": "gh-permissions-rendered",
+      "url": "https://docs.github.com/en/rest/actions/permissions",
+      "text_snapshot_sha256": "6b2c0809bef5eb1c5117304589e5dc007d2d4679dd1ace80d1e0c16bf3300d2c"
+    },
+    {
+      "name": "gh-app-user-generate",
+      "url": "https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app",
+      "text_snapshot_sha256": "201b7145b9543edf8e4e9e1ee2306dabb445925e028fe43e2f2963d102720686"
+    },
+    {
+      "name": "gh-app-user-refresh",
+      "url": "https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/refreshing-user-access-tokens",
+      "text_snapshot_sha256": "2d41288b020f9379524cdf999a653d79d578a24a5871db0569ea8f7e0f507003"
+    }
+  ],
+  "github_operation_permissions": [
+    {
+      "operation": "Create a workflow dispatch event",
+      "source": "https://docs.github.com/en/rest/actions/workflows",
+      "official_excerpt": "Fine-grained access tokens for \"Create a workflow dispatch event\" \n This endpoint works with the following fine-grained token types :\n GitHub App user access tokens \n GitHub App installation access tokens \n Fine-grained personal access tokens \n The fine-grained token must have the following permission set:\n \"Actions\" repository permissions (write)"
+    },
+    {
+      "operation": "Enable a workflow",
+      "source": "https://docs.github.com/en/rest/actions/workflows",
+      "official_excerpt": "Fine-grained access tokens for \"Enable a workflow\" \n This endpoint works with the following fine-grained token types :\n GitHub App user access tokens \n GitHub App installation access tokens \n Fine-grained personal access tokens \n The fine-grained token must have the following permission set:\n \"Actions\" repository permissions (write)"
+    },
+    {
+      "operation": "Set GitHub Actions permissions for a repository",
+      "source": "https://docs.github.com/en/rest/actions/permissions",
+      "official_excerpt": "Fine-grained access tokens for \"Set GitHub Actions permissions for a repository\" \n This endpoint works with the following fine-grained token types :\n GitHub App user access tokens \n GitHub App installation access tokens \n Fine-grained personal access tokens \n The fine-grained token must have the following permission set:\n \"Administration\" repository permissions (write)"
+    },
+    {
+      "operation": "Create or update a repository secret",
+      "source": "https://docs.github.com/en/rest/actions/secrets",
+      "official_excerpt": "Fine-grained access tokens for \"Create or update a repository secret\" \n This endpoint works with the following fine-grained token types :\n GitHub App user access tokens \n GitHub App installation access tokens \n Fine-grained personal access tokens \n The fine-grained token must have the following permission set:\n \"Secrets\" repository permissions (write)"
+    },
+    {
+      "operation": "Create or update file contents",
+      "source": "https://docs.github.com/en/rest/repos/contents",
+      "official_excerpt": "Fine-grained access tokens for \"Create or update file contents\" \n This endpoint works with the following fine-grained token types :\n GitHub App user access tokens \n GitHub App installation access tokens \n Fine-grained personal access tokens \n The fine-grained token must have at least one of the following permission sets:\n \"Contents\" repository permissions (write) \n \"Contents\" repository permissions (write) and \"Workflows\" repository permissions (write)"
+    },
+    {
+      "operation": "Create a fork",
+      "source": "https://docs.github.com/en/rest/repos/forks",
+      "official_excerpt": "Fine-grained access tokens for \"Create a fork\" \n This endpoint works with the following fine-grained token types :\n GitHub App user access tokens \n GitHub App installation access tokens \n Fine-grained personal access tokens \n The fine-grained token must have at least one of the following permission sets:\n \"Administration\" repository permissions (write) and \"Contents\" repository permissions (read) \n \"Contents\" repository permissions (read) and \"Repository creation\" repository permissions (write)"
+    }
+  ],
+  "github_app_device_refresh_client_secret_exception": "| `client_secret` | `string` | **Required** unless the user access token was generated using the device flow. The client secret for your GitHub App. |",
+  "github_app_fork_installation_restriction": "Although this endpoint works with GitHub Apps, the GitHub App must be installed on the destination account with access to all repositories and on the source account with access to the source repository.",
+  "cloudflare_source": {
+    "url": "https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.json",
+    "schema_sha256": "5cce9a4aa0bfd47dbb7b21b2be28dc8b6ab250a9613ef012089adbc64ed9ce4b",
+    "retrieved_at": "2026-10-27T03:12:46.788Z"
+  },
+  "cloudflare_operation_permissions": [
+    {
+      "method": "post",
+      "path": "/accounts/{account_id}/d1/database",
+      "operation_id": "d1-create-database",
+      "api_token_groups": [
+        "D1 Write"
+      ]
+    },
+    {
+      "method": "post",
+      "path": "/accounts/{account_id}/d1/database/{database_id}/query",
+      "operation_id": "d1-query-database",
+      "api_token_groups": [
+        "D1 Read",
+        "D1 Write"
+      ]
+    },
+    {
+      "method": "post",
+      "path": "/accounts/{account_id}/storage/kv/namespaces",
+      "operation_id": "workers-kv-namespace-create-a-namespace",
+      "api_token_groups": [
+        "Workers KV Storage Write"
+      ]
+    },
+    {
+      "method": "put",
+      "path": "/accounts/{account_id}/workers/scripts/{script_name}",
+      "operation_id": "worker-script-upload-worker-module",
+      "api_token_groups": [
+        "Workers Scripts Write",
+        "Workers Admin",
+        "Workers Editor",
+        "Individual Workers Admin",
+        "Individual Workers Editor"
+      ]
+    },
+    {
+      "method": "put",
+      "path": "/accounts/{account_id}/workers/scripts/{script_name}/schedules",
+      "operation_id": "worker-cron-trigger-update-cron-triggers",
+      "api_token_groups": [
+        "Workers Scripts Write",
+        "Workers Admin",
+        "Workers Editor",
+        "Individual Workers Admin",
+        "Individual Workers Editor"
+      ]
+    },
+    {
+      "method": "put",
+      "path": "/accounts/{account_id}/workers/scripts/{script_name}/secrets",
+      "operation_id": "worker-put-script-secret",
+      "api_token_groups": [
+        "Workers Scripts Write",
+        "Workers Admin",
+        "Workers Editor",
+        "Individual Workers Admin",
+        "Individual Workers Editor"
+      ]
+    },
+    {
+      "method": "post",
+      "path": "/accounts/{account_id}/workers/scripts/{script_name}/subdomain",
+      "operation_id": "worker-script-post-subdomain",
+      "api_token_groups": [
+        "Workers Scripts Write",
+        "Workers Admin",
+        "Workers Editor",
+        "Individual Workers Admin",
+        "Individual Workers Editor"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/accounts/{account_id}/workers/subdomain",
+      "operation_id": "worker-subdomain-get-subdomain",
+      "api_token_groups": [
+        "Workers Scripts Write",
+        "Workers Scripts Read"
+      ]
+    }
+  ],
+  "cloudflare_oauth_scope_ids_for_deployment_verified": false,
+  "live_github_app_device_test_executed": false,
+  "cloud_resources_created": false,
+  "production_resources_modified": false
+}

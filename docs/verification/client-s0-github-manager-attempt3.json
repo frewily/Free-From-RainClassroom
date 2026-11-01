@@ -1,0 +1,96 @@
+{
+  "probe": "github-manager-20261028-v3",
+  "nonce": "950009309186",
+  "target": "frewily/rain-client-s0-target-20261027",
+  "control": "frewily/rain-client-s0-control-20261027",
+  "app_id": 5504900,
+  "functional_result": "passed",
+  "dispatch_attempts": 1,
+  "writes_attempted": 9,
+  "credentials_saved_to_file": false,
+  "cleanup_pending": [],
+  "write_observations": [
+    {
+      "method": "PUT",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 204,
+      "expected_http_status": 204
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/permissions",
+      "http_status": 204,
+      "expected_http_status": 204
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/contents/.rain-client-s0/manager-20261028-950009309186.json",
+      "http_status": 201,
+      "expected_http_status": 201
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/contents/.github/workflows/s0-manager-20261028-950009309186.yml",
+      "http_status": 201,
+      "expected_http_status": 201
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/secrets/RAIN_S0_MANAGER_20261028_950009309186",
+      "http_status": 201,
+      "expected_http_status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/workflows/s0-manager-20261028-950009309186.yml/dispatches",
+      "http_status": 200,
+      "expected_http_status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/actions/secrets/RAIN_S0_MANAGER_20261028_950009309186",
+      "http_status": 204,
+      "expected_http_status": 204
+    },
+    {
+      "method": "DELETE",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/contents/.github/workflows/s0-manager-20261028-950009309186.yml",
+      "http_status": 200,
+      "expected_http_status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/repos/frewily/rain-client-s0-target-20261027/contents/.rain-client-s0/manager-20261028-950009309186.json",
+      "http_status": 200,
+      "expected_http_status": 200
+    }
+  ],
+  "stage": "finished_awaiting_revocation",
+  "selected_repository_verified": true,
+  "control_secret_key_http_status": 403,
+  "policy_baseline": {
+    "enabled": true,
+    "allowed_actions": "all",
+    "sha_pinning_required": false
+  },
+  "preflight_passed": true,
+  "disabled_policy_fields_omitted": [
+    "allowed_actions"
+  ],
+  "policy_disable_verified": true,
+  "policy_restored": true,
+  "config_readback_verified": true,
+  "workflow_readback_verified": true,
+  "secret_metadata_readback_verified": true,
+  "workflow_run_id": 40627711899,
+  "workflow_run_url": "https://github.com/frewily/rain-client-s0-target-20261027/actions/runs/40627711899",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "runner_secret_verified": true,
+  "cleanup_verified": true,
+  "authorization_cleanup_pending": false,
+  "observed_at": "2026-10-28T03:38:31.961Z",
+  "revocation_profile_http_status": 401,
+  "revocation_independently_verified": true,
+  "temporary_token_references_discarded": true
+}

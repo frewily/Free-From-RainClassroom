@@ -1,0 +1,146 @@
+{
+  "verification": "worker_probe_debug_evidence",
+  "recorded_at": "2026-10-27T13:16:38.513Z",
+  "form_origin": {
+    "browser": "Microsoft Edge",
+    "observations": [
+      {
+        "case": "/no-referrer",
+        "method": "POST",
+        "origin": "null",
+        "referer_present": false,
+        "observed_at": "2026-10-27T08:46:11.198Z"
+      },
+      {
+        "case": "/same-origin",
+        "method": "POST",
+        "origin": "http://127.0.0.1:8770",
+        "referer_present": true,
+        "observed_at": "2026-10-27T08:52:04.732Z"
+      }
+    ],
+    "live_fix_check": {
+      "referrer_policy": "same-origin",
+      "null_origin_rejected": true,
+      "same_origin_passed_origin_gate": true,
+      "gate_preserved_in_memory": true,
+      "worker_requests_sent": 0,
+      "stage": "awaiting_worker_setup"
+    },
+    "gate_value_logged_or_saved": false
+  },
+  "first_cloud_attempt": {
+    "stage": "not_passed",
+    "worker_name": "rain-client-s0-worker-20261027",
+    "build": "rain-s0-worker-github-20261027-v1",
+    "github_app_id": 5489930,
+    "worker_requests_sent": 1,
+    "github_refresh_executed_locally": false,
+    "credentials_saved_to_file": false,
+    "authorization_cleanup_pending": true,
+    "gate_reused_in_memory": true,
+    "worker_source_sha256": "c7278017633ebd70135eb162278e421ca4d0af2e2dbeceb4392b5531b18fe5e1",
+    "observed_at": "2026-10-27T09:37:17.502Z",
+    "worker_url": "https://rain-client-s0-worker-20261027.2994508531.workers.dev",
+    "gate_verified": true,
+    "device_code_expires_at": "2026-10-27T09:32:35.396Z",
+    "retention_deadline": "2026-10-27T09:37:16.602Z",
+    "probe_nonce": "57a5a7c9296ee8edecee26cf",
+    "worker_http_status": 502,
+    "worker_summary": {
+      "build": "rain-s0-worker-github-20261027-v1",
+      "nonce": "57a5a7c9296ee8edecee26cf",
+      "api_version": "2026-03-10",
+      "client_secret_sent": false,
+      "dispatch_attempted": false,
+      "error_code": "transport_or_parse_error"
+    },
+    "functional_result": "not_passed",
+    "error_code": "worker_probe_not_passed",
+    "temporary_token_references_discarded": true,
+    "memory_retention_timeout": true,
+    "user_reported_revocation_complete": true,
+    "mutation_not_reached": true
+  },
+  "runtime_transport": {
+    "observed_at": "2026-10-27T09:59:00.296Z",
+    "worker_url": "https://rain-client-s0-worker-20261027.2994508531.workers.dev",
+    "http_status": 200,
+    "build": "rain-s0-worker-github-20261027-v1",
+    "github_credentials_used": false,
+    "dispatch_attempted": false,
+    "capabilities": {
+      "fetch_type": "function",
+      "abort_signal_timeout_type": "function",
+      "abort_controller_type": "function"
+    },
+    "cases": [
+      {
+        "mode": "original_unbound",
+        "phase": "fetch",
+        "error_name": "TypeError",
+        "receiver_error": false,
+        "error_message": "Invalid redirect value, must be one of \"follow\" or \"manual\" (\"error\" won't be implemented since it does not make sense at the edge; use \"manual\" and check the response status code)."
+      },
+      {
+        "mode": "global_receiver",
+        "phase": "fetch",
+        "error_name": "TypeError",
+        "receiver_error": false,
+        "error_message": "Invalid redirect value, must be one of \"follow\" or \"manual\" (\"error\" won't be implemented since it does not make sense at the edge; use \"manual\" and check the response status code)."
+      },
+      {
+        "mode": "native_defaults_unbound",
+        "phase": "read_response",
+        "http_status": 403,
+        "fixture_content_present": false
+      },
+      {
+        "mode": "native_defaults_bound",
+        "phase": "read_response",
+        "http_status": 200,
+        "fixture_content_present": true,
+        "fixture_hash_matches": true
+      },
+      {
+        "mode": "manual_redirect",
+        "phase": "read_response",
+        "http_status": 200,
+        "fixture_content_present": true,
+        "fixture_hash_matches": true
+      },
+      {
+        "mode": "manual_abort_controller",
+        "phase": "read_response",
+        "http_status": 200,
+        "fixture_content_present": true,
+        "fixture_hash_matches": true
+      }
+    ]
+  },
+  "source_read_check": {
+    "observed_at": "2026-10-27T13:14:02.138Z",
+    "http_status": 200,
+    "build": "rain-s0-worker-github-20261027-v3",
+    "github_credentials_used": false,
+    "dispatch_attempted": false,
+    "raw_http_status": 200,
+    "raw_fixture_hash_matches": true,
+    "public_api_http_status": 200,
+    "public_api_rate_limited": false
+  },
+  "validated_snapshot": {
+    "source_file": "/private/tmp/rain-client-s0/worker-v3-5a65621b0d35.mjs",
+    "sha256": "5a65621b0d35dd6aa9bc7da98e0c4b93ff4fe5ef79e4a32daedaff4f305120b0",
+    "build": "rain-s0-worker-github-20261027-v3",
+    "created_at": "2026-10-27T13:09:19.322Z"
+  },
+  "public_api_403_cause_independently_confirmed": false,
+  "notes": [
+    "First cloud request failed before fixture validation, token refresh or dispatch.",
+    "Workers rejects redirect:error; manual redirects with explicit 3xx rejection are required.",
+    "The fetch receiver hypothesis was not confirmed and was discarded.",
+    "Later source check observed both raw and API HTTP 200; earlier API 403 responses were not retrospectively classified.",
+    "Mutable worker.mjs was observed reverting to an older version; active deployment uses a validated read-only snapshot of worker-runtime.mjs."
+  ]
+}

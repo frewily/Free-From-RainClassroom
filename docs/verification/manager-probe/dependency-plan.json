@@ -1,0 +1,26 @@
+[
+  {
+    "name": "PyNaCl",
+    "version": "1.6.2",
+    "filename": "pynacl-1.6.2-cp38-abi3-macosx_10_10_universal2.whl",
+    "sha256": "c949ea47e4206af7c8f604b8278093b674f7c79ed0d4719cc836902bf4517465",
+    "bytes": 388458,
+    "url": "https://files.pythonhosted.org/packages/be/7b/4845bbf88e94586ec47a432da4e9107e3fc3ce37eb412b1398630a37f7dd/pynacl-1.6.2-cp38-abi3-macosx_10_10_universal2.whl"
+  },
+  {
+    "name": "cffi",
+    "version": "2.1.1",
+    "filename": "cffi-2.1.1-cp314-cp314-macosx_11_0_arm64.whl",
+    "sha256": "661c298b4821edebead0c91edd2b00374d67ad7c5a1f7a91d4442633b79d6a72",
+    "bytes": 184962,
+    "url": "https://files.pythonhosted.org/packages/b3/a9/9db617d05d7367c1ad0ab00b3aa6e6f9281edd689b4ee9ea0e5a84e89c97/cffi-2.1.1-cp314-cp314-macosx_11_0_arm64.whl"
+  },
+  {
+    "name": "pycparser",
+    "version": "3.12",
+    "filename": "pycparser-3.12-py3-none-any.whl",
+    "sha256": "a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e",
+    "bytes": 62600,
+    "url": "https://files.pythonhosted.org/packages/b6/ae/315bbeee126a769cbde43cf4908acb4b40408d8bf8bbf334dd7368d8dadf/pycparser-3.12-py3-none-any.whl"
+  }
+]

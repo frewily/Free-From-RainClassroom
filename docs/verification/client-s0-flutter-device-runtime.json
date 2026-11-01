@@ -1,0 +1,226 @@
+{
+  "date": "2026-10-28",
+  "stage": "basic_ui_user_reported_passed_login_probe_next",
+  "installation_approved": true,
+  "approved_by": "Explicit user instruction to install using the proposed shared directories",
+  "sdk_paths": {
+    "flutter": "/Users/frewily/Library/Developer/flutter/3.47.8",
+    "android": "/Users/frewily/Library/Android/sdk"
+  },
+  "cache_root": "/Users/frewily/Library/Caches/RainClient",
+  "scope_unchanged_from_installation_plan_except_shared_paths": true,
+  "licenses": [
+    {
+      "license_id": "android-sdk-license",
+      "review_path": "/private/tmp/rain-client-s0/flutter-device-install/android-sdk-license.txt",
+      "sha256": "1f8729233617b193fd619213792ae16a41b95d2bbbf525dfe66998252ba68b16",
+      "sha1": "efa68a6b3c661d18699d5c026771d5911cdc2f83",
+      "packages": [
+        "platform-tools",
+        "platforms;android-36",
+        "build-tools;36.0.0",
+        "ndk;28.2.13676358"
+      ],
+      "user_accepted": true,
+      "accepted_at": "2026-10-28T12:32:33.799265+00:00",
+      "acceptance_evidence": "Explicit user reply confirming review and acceptance of this Android SDK license"
+    }
+  ],
+  "sdk_installed": true,
+  "flutter_executed": true,
+  "project_created": true,
+  "android_build_passed": true,
+  "phone_apk_installed": false,
+  "mac_build_passed": false,
+  "global_shell_profile_modified": false,
+  "global_java_modified": false,
+  "observed_at": "2026-10-28T14:22:08.861681+00:00",
+  "flutter_source_installed": true,
+  "flutter_install_method": "Official Git clone of tag 3.47.8 after full archive transport timeout",
+  "flutter_source_commit": "737ba8f885dc774b53b442759999a312c9461e4e",
+  "flutter_full_archive_verified": false,
+  "flutter_full_archive_transport_exit": 28,
+  "android_command_line_tools_installed": true,
+  "android_command_line_tools_version": "22.0",
+  "android_tools_archive_sha256": "835b62a26162b229b441d1f6d4680383815a270809eb33522c0d480fa5002c4e",
+  "android_tools_java17_verified": true,
+  "phone_connection_deferred_by_user": true,
+  "flutter_first_bootstrap_attempts": [
+    {
+      "exit": 35,
+      "symptom": "TLS connection error while fetching the pinned Dart engine component"
+    },
+    {
+      "exit": 35,
+      "symptom": "Same initial component download failure; standalone explicit proxy HEAD 200 and range GET 206 later succeeded"
+    }
+  ],
+  "ndk_sdkmanager_attempt": {
+    "exit": 1,
+    "symptom": "Error reading Zip content from a SeekableByteChannel",
+    "precise_cause_verified": false,
+    "partial_install_present": false
+  },
+  "install_recovery": "Separate downloads from extraction; verify complete official artifacts before use; SDK Manager installs other approved base packages separately",
+  "flutter_version": {
+    "frameworkVersion": "3.47.8",
+    "channel": "[user-branch]",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "737ba8f885dc774b53b442759999a312c9461e4e",
+    "frameworkCommitDate": "2026-10-22 21:37:31 -0700",
+    "engineRevision": "cf636b1dfb818dd6a3ff16e390e93b1a036969c8",
+    "engineCommitDate": "2026-10-23 02:13:38.000Z",
+    "engineContentHash": "dfd2e6cb7d319db05e3bf1503f3e2ac60f6288a2",
+    "engineBuildDate": "2026-10-23 11:34:48.330",
+    "dartSdkVersion": "3.13.7",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.8",
+    "flutterRoot": "/Users/frewily/Library/Developer/flutter/3.47.8"
+  },
+  "flutter_cli_passed": true,
+  "android_base_packages_verified": {
+    "platform-tools": "37.0.1",
+    "platforms;android-36": "2",
+    "build-tools;36.0.0": "36.0.0",
+    "adb": "1.0.41"
+  },
+  "dart_recovery_note": "Separately downloaded archive verified against official MD5/size; extraction retained macOS metadata. Official bootstrap subsequently installed the same pinned SDK successfully. No vendor source was modified.",
+  "project_path": "/private/tmp/rain-client-s0/flutter-device-probe",
+  "project_platforms": [
+    "android",
+    "macos"
+  ],
+  "android_application_id": "top.frewily.rainclient.probe",
+  "analysis_passed": true,
+  "widget_tests_passed": 1,
+  "widget_test_covers": [
+    "first rendered frame",
+    "two visible counter updates",
+    "state reset after widget disposal and recreation"
+  ],
+  "physical_device_rendering_verified": false,
+  "gradle_distribution": "9.3.1-bin",
+  "gradle_distribution_sha256": "b266d5ff6b90eada6dc3b20cb090e3731302e553a27c5d3e4df1f0d76beaff06",
+  "sdk_automatic_downloads_disabled_in_probe": true,
+  "vendor_initial_cache_note": "Flutter create automatically fetched its standard Darwin engine/font and small iOS USB support artifacts; no iOS project, Xcode or simulator was installed.",
+  "android_build_first_attempt": {
+    "exit": 1,
+    "stage": "AGP plugin resolution",
+    "plugin": "com.android.application:9.1.0"
+  },
+  "google_maven_route_diagnosis": {
+    "artifact_url": "https://dl.google.com/dl/android/maven2/com/android/application/com.android.application.gradle.plugin/9.1.0/com.android.application.gradle.plugin-9.1.0.pom",
+    "curl_direct_http_status": 200,
+    "java_default_http_status": 404,
+    "java_default_using_proxy": true,
+    "java_explicit_proxy_http_status": 404,
+    "java_scoped_nonproxy_http_status": 200,
+    "java_scoped_nonproxy_using_proxy": false,
+    "direct_response_sha256": "06caacd317a88e490bc8518153bcd5974865e32cfc7fe562c8331d87c70be8f5",
+    "repair": "Scoped Gradle https/http proxy plus dl.google.com nonProxyHosts; dependency versions unchanged"
+  },
+  "probe_source_sha256": {
+    "lib/main.dart": "8b05422738d1f66541d60d915de699e0d4c31087a6817099548721b3abb0b604",
+    "test/widget_test.dart": "c1928922ffebf95e53cbcbfcfa937b822053481566db7c995dd8873a33e8be11",
+    "pubspec.yaml": "07db3b2841a2565555b26cdee7ebb1ffdef7f5fbae7e5f640941dfcd23df13aa",
+    "pubspec.lock": "add66ed65ebef8bf9075c23e474c7c2944d23079d5a0282100c25815bcf4a11f",
+    "android/gradle.properties": "a25fbb9abf5647026c548beafbaa745e7b8a023e7306865d7fa36f281f2159f1",
+    "android/settings.gradle.kts": "016759283e88ade6eba92910583feeef88b962839b957aa414296afd2952d122",
+    "android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+    "android/app/build.gradle.kts": "4591c8d751b31c13c2b48ae96945a0888d9c21dd18e57cf2cec5e32cbf15c5f8",
+    "android/app/src/main/AndroidManifest.xml": "96171e538fbd42c138ffe5502fc4b2e81595d1b048becdbd3ae39ebda527df2d",
+    "android/gradle/wrapper/gradle-wrapper.properties": "4cbe14060ba54f3733879c578450a8fe15efce6e0cf154e862453a46e538df11"
+  },
+  "probe_source_evidence": "flutter-device-probe/source-manifest.json",
+  "ndk_installed": {
+    "revision": "28.2.13676358",
+    "source_url": "https://dl.google.com/android/repository/android-ndk-r28c-darwin.zip",
+    "download_bytes": 952495160,
+    "official_repository_sha1": "fc20a6bf15a30fb3428c9b60a7308793a362dc6d",
+    "sha256": "0d4599e8bbf1a1668a0d51a541729b2246360f350018a2081d0b302dbb594f2a",
+    "installed_path": "/Users/frewily/Library/Android/sdk/ndk/28.2.13676358",
+    "observed_at": "2026-10-28T14:07:39.080787+00:00"
+  },
+  "ndk_host_tool_architectures": [
+    "arm64",
+    "x86_64"
+  ],
+  "android_sdk_manager_registered_packages": {
+    "build-tools;36.0.0": "36.0.0",
+    "cmdline-tools;22.0": "22.0",
+    "ndk;28.2.13676358": "28.2.13676358",
+    "platform-tools": "37.0.1",
+    "platforms;android-36": "2"
+  },
+  "local_package_registration_note": "Manually extracted packages registered from official revisions using the SDK Manager current generic/02 metadata format after an initial old-schema parse failure; SDK Manager readback now lists all five packages without corrupted metadata warnings.",
+  "android_build_seconds": 72.8,
+  "android_build_warnings": [
+    "SDK processing supports schema versions up to 3 while a version 4 schema was encountered; build completed successfully."
+  ],
+  "apk": {
+    "path": "/private/tmp/rain-client-s0/flutter-device-probe/build/app/outputs/flutter-apk/app-debug.apk",
+    "bytes": 150352414,
+    "sha256": "5f02923b7a32563a6aeb7dc3514bba9c45bf67103b3510da21cae071c58fca63",
+    "application_id": "top.frewily.rainclient.probe",
+    "display_name": "雨课堂客户端 · 环境验证",
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "architectures": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64"
+    ],
+    "signature_verified": true,
+    "signature_scheme_v2": true,
+    "debug_build": true
+  },
+  "flutter_doctor": {
+    "exit_code": 0,
+    "android_toolchain_passed": true,
+    "all_required_android_licenses_accepted": true,
+    "full_xcode_present": false,
+    "mac_build_ready": false,
+    "warnings": [
+      "Pinned official tag is a detached Git checkout reported as [user-branch]",
+      "Xcode absent; CocoaPods not installed",
+      "Process NO_PROXY omits IPv6 loopback ::1"
+    ]
+  },
+  "disk_usage_kib": {
+    "flutter_sdk": 1177588,
+    "android_sdk": 3457120,
+    "isolated_caches_and_downloads": 4649404,
+    "temporary_probe_project": 2004916
+  },
+  "debug_keystore_in_isolated_android_user_home": true,
+  "original_android_user_directory_mtime_unchanged_from_preflight": true,
+  "original_gradle_user_directory_mtime_unchanged_from_preflight": true,
+  "flutter_home_settings_created": false,
+  "dart_home_tool_directory_created": false,
+  "not_verified": [
+    "Physical Android install, first frame, taps and relaunch",
+    "Flutter Mac build and native window",
+    "Flutter login, OAuth callback and secure storage",
+    "Production client or release signing"
+  ],
+  "business_repository_committed_or_pushed": false,
+  "production_resources_modified": false,
+  "probe_gradle_daemons_stopped": true,
+  "doctor_started_adb_server_stopped": true,
+  "active_download_or_build_sessions": false,
+  "user_reported_probe_behavior": {
+    "counter_updates": true,
+    "counter_resets_after_relaunch": true,
+    "evidence": "User reported the button only increases the counter, then confirmed relaunch/reset also behaves normally",
+    "independently_observed_by_agent": false,
+    "device_identity_and_android_version_checked": false
+  },
+  "size_inspection_evidence": "client-s0-android-apk-size.json",
+  "next_slice": "Prepare Android official login, same-device completion/return, read-only session validation and secure storage; present plugin installation scope before implementation",
+  "user_reported_test_device": {
+    "model": "一加 Ace5 至尊版",
+    "android_version": "16",
+    "independently_verified": false
+  },
+  "next_slice_plan": "../client-app-android-login-plan.md"
+}

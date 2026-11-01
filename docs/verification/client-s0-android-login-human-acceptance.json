@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-29",
+  "evidence_kind": "direct_user_report_not_agent_observation",
+  "phone": {
+    "reported_model": "一加 Ace5 至尊版",
+    "reported_android_version": "16",
+    "independently_inspected": false
+  },
+  "accepted_apk_sha256": "b8bc36024129b4a3cab9c7c76fdbc479bd6756f2c57804a884e6bf62e0276bd6",
+  "user_statement": "通过了，四个全都通过了测试。只是前往登录界面的时候，里面的电脑版网页和手机版不太适配。就这一个小问题，其他的没什么。",
+  "follow_up_symptom": "网页太宽，部分内容被截断，需要横向滑动",
+  "reported_passed_steps": [
+    "Install and open development app",
+    "Complete official login in app",
+    "Read-only verification returns logged in",
+    "Reopen restores login; local logout clears login"
+  ],
+  "offline_restore_test_reported": false,
+  "wechat_jump_method_reported": false,
+  "layout_patch_on_phone_accepted": false,
+  "notes": [
+    "Four reported steps refer to the immediately preceding delivery instructions.",
+    "The exact official login method and WeChat round trip were not specified.",
+    "Original runtime JSON preserves pre-acceptance build-time observations."
+  ]
+}

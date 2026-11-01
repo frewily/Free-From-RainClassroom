@@ -1,0 +1,29 @@
+{
+  "probe": "github-manager-20261028-v1",
+  "nonce": "9680e8029a5c",
+  "target": "frewily/rain-client-s0-target-20261027",
+  "control": "frewily/rain-client-s0-control-20261027",
+  "app_id": 5504900,
+  "functional_result": "not_passed",
+  "dispatch_attempts": 0,
+  "writes_attempted": 1,
+  "credentials_saved_to_file": false,
+  "cleanup_pending": [],
+  "stage": "finished_awaiting_revocation",
+  "selected_repository_verified": true,
+  "control_secret_key_http_status": 403,
+  "policy_baseline": {
+    "enabled": true,
+    "allowed_actions": "all",
+    "sha_pinning_required": false
+  },
+  "preflight_passed": true,
+  "error_code": "write_rejected",
+  "policy_restored": true,
+  "cleanup_verified": true,
+  "authorization_cleanup_pending": false,
+  "observed_at": "2026-10-28T03:14:03.055Z",
+  "revocation_profile_http_status": 401,
+  "revocation_independently_verified": true,
+  "temporary_token_references_discarded": true
+}

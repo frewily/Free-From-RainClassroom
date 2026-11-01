@@ -1,0 +1,11 @@
+{
+  "client_id": "840b60304c633c313f931fc8697f22f3",
+  "official_scope_details_verified": false,
+  "scopes": [
+    {"name": "D1 Write", "id": "d1.write"},
+    {"name": "Workers Admin", "id": null},
+    {"name": "Workers KV Storage Write", "id": "workers-kv-storage.write"},
+    {"name": "Memberships Read", "id": "memberships.read"},
+    {"name": "User Details Read", "id": "user-details.read"}
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "observed_at": "2026-10-29T03:30:08.105933+00:00",
+  "scope": "Approved read-only no-session/synthetic-invalid controls; no raw response retained",
+  "results": [
+    {
+      "name": "no_session",
+      "url": "https://changjiang.yuketang.cn/v2/api/web/userinfo",
+      "real_credentials_sent": false,
+      "transport_exit": 0,
+      "http_status": 401,
+      "json": true,
+      "top_level_keys": [
+        "errcode",
+        "errmsg"
+      ],
+      "data_type": "NoneType",
+      "has_identity_record": false,
+      "errcode": 401002,
+      "contains_login_hint": false
+    },
+    {
+      "name": "synthetic_invalid_session",
+      "url": "https://changjiang.yuketang.cn/v2/api/web/userinfo",
+      "real_credentials_sent": false,
+      "transport_exit": 0,
+      "http_status": 401,
+      "json": true,
+      "top_level_keys": [
+        "errcode",
+        "errmsg"
+      ],
+      "data_type": "NoneType",
+      "has_identity_record": false,
+      "errcode": 401000,
+      "contains_login_hint": false
+    }
+  ]
+}

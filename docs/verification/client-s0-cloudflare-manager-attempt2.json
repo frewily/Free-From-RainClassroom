@@ -1,0 +1,127 @@
+{
+  "client_id": "840b60304c633c313f931fc8697f22f3",
+  "requested_scope_names": [
+    "D1 Write",
+    "Workers Admin",
+    "Workers KV Storage Write",
+    "Memberships Read",
+    "User Details Read"
+  ],
+  "requested_scope_ids": [
+    "d1.write",
+    "workers-scripts.admin",
+    "workers-kv-storage.write",
+    "memberships.read",
+    "user-details.read"
+  ],
+  "granted_scope_ids": [
+    "d1.write",
+    "workers-scripts.admin",
+    "workers-kv-storage.write",
+    "memberships.read",
+    "user-details.read"
+  ],
+  "workers_admin_continuation": true,
+  "client_secret_sent": false,
+  "callback_state_verified": true,
+  "worker_source_sha256": "e8829926b441b849fff0689e17338fb46f4db84024175450beb5e033bbd6f084",
+  "probe": "rain-s0-cf-deploy-20261028-v1",
+  "account_id": "6081b0f279a7de585cd27b877f1f5335",
+  "spec": {
+    "nonce": "4e31e0ff59d2",
+    "worker": "rain-client-s0-deploy-20261028-4e31e0ff59d2",
+    "kv": "rain-client-s0-kv-20261028-4e31e0ff59d2",
+    "d1": "rain-client-s0-db-20261028-4e31e0ff59d2"
+  },
+  "stage": "finished",
+  "functional_result": "not_passed",
+  "writes": [
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/storage/kv/namespaces",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "PUT",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/storage/kv/namespaces/255a4a9da9fa4e898f7d0304ec975375/values/4e31e0ff59d2",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database/bbfecf0b-b134-47a6-9dab-353d94dcf647/query",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database/bbfecf0b-b134-47a6-9dab-353d94dcf647/query",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database/bbfecf0b-b134-47a6-9dab-353d94dcf647/query",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "PUT",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/workers/scripts/rain-client-s0-deploy-20261028-4e31e0ff59d2",
+      "http_status": 400,
+      "response_kind": "json",
+      "error_codes": [
+        10021
+      ],
+      "response_sha256": "a5de8c717d36ab28fcd0a9e43179fda4aa4f20c46376192aa05222de02b952f0"
+    },
+    {
+      "method": "DELETE",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/d1/database/bbfecf0b-b134-47a6-9dab-353d94dcf647",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/accounts/6081b0f279a7de585cd27b877f1f5335/storage/kv/namespaces/255a4a9da9fa4e898f7d0304ec975375",
+      "http_status": 200,
+      "response_kind": "json",
+      "error_codes": []
+    }
+  ],
+  "cleanup_pending": [],
+  "worker_retained": false,
+  "credentials_saved_to_file": false,
+  "initial_profile_http_status": 200,
+  "account_discovery_verified": true,
+  "preflight_passed": true,
+  "kv_id": "255a4a9da9fa4e898f7d0304ec975375",
+  "d1_id": "bbfecf0b-b134-47a6-9dab-353d94dcf647",
+  "kv_api_roundtrip": true,
+  "d1_api_roundtrip": true,
+  "error_code": "cloudflare_api_rejected",
+  "worker_created": false,
+  "d1_removed": true,
+  "kv_removed": true,
+  "cleanup_verified": true,
+  "observed_at": "2026-10-28T07:40:18.536Z",
+  "access_revoke_http_status": 200,
+  "post_revoke_profile_http_status": 403,
+  "revocation_independently_verified": true,
+  "revocation_cleanup_pending": false,
+  "temporary_token_references_discarded": true
+}
