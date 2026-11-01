@@ -283,6 +283,8 @@ GitHub Actions 用户将值保存为仓库 Secret `SESSION`；本地 / 服务器
 
 目前仅供本人账号和指定空测试仓库开发验证，尚未接入真实课表／课堂、自动 Fork、公开跨账号发行或 Mac Flutter 客户端。开发构建仍使用开发签名，具体边界及证据见[本轮实测记录](docs/client-app-android-callback-fix.md)。
 
+新对话接手请先读 [AGENTS.md](AGENTS.md) 和 [开发交接记录](docs/development/开发交接记录.md)。下一工作包优先调查雨课堂课程列表与未来上课时间，确定课表来源后再进入开发。
+
 ## 开发验证：离线自动化测试
 
 推送代码或创建、更新 PR 后，`Offline tests` 会分别运行 Python 3.10、Python 3.14 和 Node.js 24 的测试。Python 3.10 与当前监听工作流一致；两个 Python 版本分别报告结果，不因其中一个失败而取消另一个。
