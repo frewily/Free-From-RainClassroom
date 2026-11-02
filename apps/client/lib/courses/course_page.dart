@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../auth/session_store.dart';
+import '../timetable/manual_time_controller.dart';
+import '../timetable/manual_time_page.dart';
+import '../timetable/manual_time_store.dart';
 import 'course_client.dart';
 import 'course_controller.dart';
 import 'course_model.dart';
@@ -19,6 +22,28 @@ class CoursePage extends StatefulWidget {
 class _CoursePageState extends State<CoursePage> {
   late final CourseController _courses;
   String _query = '';
+  bool _openingTimes = false;
+
+  Future<void> _openTimes(CourseClass course) async {
+    final owner = _courses.account;
+    if (owner == null || !_courses.canEdit || _courses.dirty || _openingTimes) {
+      return;
+    }
+    setState(() => _openingTimes = true);
+    final controller = ManualTimeController(
+      checkAccess: () => _courses.confirmTimeAccess(owner, course.id),
+      store: ManualTimeStore(owner, course.id),
+    );
+    final changed = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ManualTimePage(course: course, controller: controller),
+      ),
+    );
+    if (!mounted) return;
+    setState(() => _openingTimes = false);
+    if (changed == true) await _courses.load();
+  }
 
   @override
   void initState() {
@@ -99,10 +124,15 @@ class _CoursePageState extends State<CoursePage> {
                       ),
                       const SizedBox(height: 10),
                       const Text(
-                        '选择按雨课堂账号保存在这台设备。\n尚未配置监听时间，也尚未启用监听。',
+                        '选择按雨课堂账号保存在这台设备。\n保存选择后可录入手工时间，尚未启用监听。',
                         style: TextStyle(height: 1.7, color: Color(0xff61726b)),
                       ),
                       const SizedBox(height: 16),
+                      const Text(
+                        '勾选并保存后，点击班级旁的时钟设置本机上课时间。',
+                        style: TextStyle(fontSize: 12, height: 1.6),
+                      ),
+                      if (_courses.dirty) const Text('请先保存课程选择，再设置上课时间。'),
                       SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: const Text('查看归档班级'),
@@ -211,6 +241,19 @@ class _CoursePageState extends State<CoursePage> {
                             child: CheckboxListTile(
                               key: ValueKey('course-${course.id}'),
                               controlAffinity: ListTileControlAffinity.leading,
+                              secondary: _courses.selected.contains(course.id)
+                                  ? IconButton(
+                                      key: ValueKey('times-${course.id}'),
+                                      tooltip: '设置上课时间',
+                                      onPressed:
+                                          _courses.canEdit &&
+                                              !_courses.dirty &&
+                                              !_openingTimes
+                                          ? () => _openTimes(course)
+                                          : null,
+                                      icon: const Icon(Icons.schedule),
+                                    )
+                                  : null,
                               isThreeLine: false,
                               value: _courses.selected.contains(course.id),
                               onChanged: _courses.canEdit
@@ -314,7 +357,7 @@ class _CoursePageState extends State<CoursePage> {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        '本机选择 · 尚未配置时间／启用监听',
+                        '本机选择 · 尚未启用监听',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,

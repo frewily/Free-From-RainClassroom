@@ -24,6 +24,42 @@ void main() {
   });
   tearDown(() => controller.dispose());
 
+  test('time editor only accepts a saved classroom and current session without a new network request', () async {
+    storage.seed('account-a', ['one']);
+    await controller.load();
+    final requests = gateway.identities + gateway.lists;
+    await controller.confirmTimeAccess(gateway.owner, 'one');
+    expect(gateway.identities + gateway.lists, requests);
+    await expectLater(
+      controller.confirmTimeAccess(gateway.owner, 'two'),
+      throwsA(isA<CourseFailure>()),
+    );
+    controller.toggle('two', true);
+    await expectLater(
+      controller.confirmTimeAccess(gateway.owner, 'one'),
+      throwsA(isA<CourseFailure>()),
+    );
+  });
+
+  test(
+    'time access rechecks persistent selection and refuses a rotated session',
+    () async {
+      storage.seed('account-a', ['one']);
+      await controller.load();
+      storage.seed('account-a', []);
+      await expectLater(
+        controller.confirmTimeAccess(gateway.owner, 'one'),
+        throwsA(isA<CourseFailure>()),
+      );
+      storage.seed('account-a', ['one']);
+      sessions.value = 'new-session';
+      await expectLater(
+        controller.confirmTimeAccess(gateway.owner, 'one'),
+        throwsA(isA<CourseFailure>()),
+      );
+    },
+  );
+
   test('selection restores by account and preserves ids absent from the current list', () async {
     storage.seed('account-a', ['one', 'old']);
     await controller.load();

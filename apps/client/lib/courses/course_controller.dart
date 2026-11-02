@@ -54,6 +54,34 @@ class CourseController extends ChangeNotifier {
     if (current != session) throw const CourseFailure(CourseIssue.changed);
   }
 
+  /// A time editor is bound to this verified account and saved selection.
+  /// It never needs a copy of the session or an additional network request.
+  Future<void> confirmTimeAccess(
+    CourseAccount owner,
+    String classroomId,
+  ) async {
+    final generation = _generation, session = _session;
+    void check() {
+      if (!_current(generation) ||
+          session == null ||
+          !canEdit ||
+          dirty ||
+          account?.id != owner.id ||
+          !_selected.contains(classroomId)) {
+        throw const CourseFailure(CourseIssue.changed);
+      }
+    }
+
+    check();
+    await _checkSession(session!);
+    final saved = await _selections.read(owner).timeout(ioTimeout);
+    if (!saved.contains(classroomId)) {
+      throw const CourseFailure(CourseIssue.changed);
+    }
+    await _checkSession(session);
+    check();
+  }
+
   Future<void> _recordFailure(
     CourseFailure error,
     int generation,

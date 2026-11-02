@@ -23,11 +23,20 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(controller.listing!.classes.length, 2);
+      // Move the row clear of the fixed save footer before tapping its centre.
+      await tester.drag(find.byType(ListView), const Offset(0, -220));
+      await tester.pumpAndSettle();
       await tester.ensureVisible(find.byKey(const ValueKey('course-one')));
       await tester.tap(find.byKey(const ValueKey('course-one')));
       await tester.pump();
       expect(controller.selected, {'one'});
       expect(controller.dirty, isTrue);
+      expect(
+        tester
+            .widget<IconButton>(find.byKey(const ValueKey('times-one')))
+            .onPressed,
+        isNull,
+      );
       await tester.scrollUntilVisible(
         find.byKey(const ValueKey('course-two')),
         150,
@@ -46,7 +55,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('选择已保存'), findsOneWidget);
       expect(controller.dirty, isFalse);
-      expect(find.textContaining('尚未配置时间／启用监听'), findsOneWidget);
+      expect(
+        tester
+            .widget<IconButton>(find.byKey(const ValueKey('times-two')))
+            .onPressed,
+        isNotNull,
+      );
+      expect(find.text('本机选择 · 尚未启用监听'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
