@@ -283,7 +283,9 @@ GitHub Actions 用户将值保存为仓库 Secret `SESSION`；本地 / 服务器
 
 ## 安卓管理客户端（开发验证版）
 
-客户端源码位于 [apps/client](apps/client/README.md)。当前 0.3.4 已完成安卓雨课堂登录、GitHub 绑定，以及 Cloudflare 官方授权 → 应用内测试部署 → 空任务真实成功 → 手机显示结果并关闭测试入口的验证，113 项客户端本地测试通过。
+客户端源码位于 [apps/client](apps/client/README.md)。当前 0.4.0 新增雨课堂课程班级只读加载、勾选与本机保存恢复；137 项客户端本地测试、静态分析及 ARM64 预览构建通过。真实手机已读取 30 个未归档、12 个归档班级，并验证选择保存、跨归档保留、重开恢复和清空恢复。勾选不会启用监听或向云端写入，见[课程选择说明](docs/client-app-course-selection.md)。
+
+0.3.4 已完成安卓雨课堂登录、GitHub 绑定，以及 Cloudflare 官方授权 → 应用内测试部署 → 空任务真实成功 → 手机显示结果并关闭测试入口的验证。
 
 目前仅供本人账号和指定空测试仓库开发验证，尚未接入真实课表／课堂、自动 Fork、公开跨账号发行或 Mac Flutter 客户端。开发构建仍使用开发签名，具体边界及证据见[本轮实测记录](docs/client-app-android-callback-fix.md)。
 

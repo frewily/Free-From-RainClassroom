@@ -4,6 +4,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// An explicit side-by-side preview keeps an existing installation intact when
+// its former development signing key is unavailable.
+val coursePreview = providers.gradleProperty("rainclient.preview").orNull == "true"
+val localDevKeystore = providers.gradleProperty("rainclient.devKeystore").orNull
+
 android {
     namespace = "top.frewily.rainclient"
     compileSdk = flutter.compileSdkVersion
@@ -16,7 +21,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "top.frewily.rainclient.dev"
+        applicationId = if (coursePreview) "top.frewily.rainclient.preview" else "top.frewily.rainclient.dev"
+        manifestPlaceholders["rainClientLabel"] = if (coursePreview) "雨课堂选课 · 预览" else "雨课堂管理 · 开发版"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -35,6 +41,10 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
+    }
+
+    if (localDevKeystore != null) {
+        signingConfigs.getByName("debug").storeFile = file(localDevKeystore)
     }
 }
 

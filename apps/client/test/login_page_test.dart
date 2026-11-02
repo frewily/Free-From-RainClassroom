@@ -6,6 +6,29 @@ import 'package:rainclient/main.dart';
 import 'auth_fakes.dart';
 
 void main() {
+  testWidgets(
+    'saved rain login opens course selection without another login flow',
+    (tester) async {
+      await tester.pumpWidget(
+        RainClientApp(
+          home: LoginPage(
+            store: MemoryStore('synthetic-session'),
+            verifier: FakeVerifier(),
+            cookies: MemoryCookies(),
+            coursesPageBuilder: (_) =>
+                const Scaffold(body: Text('synthetic course reader')),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const ValueKey('open-courses')));
+      await tester.tap(find.byKey(const ValueKey('open-courses')));
+      await tester.pumpAndSettle();
+      expect(find.text('synthetic course reader'), findsOneWidget);
+      expect(find.text('synthetic official login surface'), findsNothing);
+    },
+  );
+
   testWidgets('a user can open login, verify, and exit locally', (
     tester,
   ) async {

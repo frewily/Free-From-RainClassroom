@@ -10,7 +10,7 @@
       <data android:mimeType="text/plain" />
     </intent>
   </queries>
-  <application android:label="雨课堂管理 · 开发版" android:allowBackup="false" android:fullBackupContent="false" android:dataExtractionRules="@xml/data_extraction_rules" android:usesCleartextTraffic="false" android:name="${applicationName}" android:icon="@mipmap/ic_launcher">
+  <application android:label="${rainClientLabel}" android:allowBackup="false" android:fullBackupContent="false" android:dataExtractionRules="@xml/data_extraction_rules" android:usesCleartextTraffic="false" android:name="${applicationName}" android:icon="@mipmap/ic_launcher">
     <service android:name=".CloudflareReturnService" android:exported="false" android:stopWithTask="true" android:foregroundServiceType="specialUse">
       <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="User-initiated OAuth loopback return and secure token exchange while the external system browser is foreground. No OAuth data enters the service. Stops on completion, cancellation, task removal, or a 12-minute hard limit." />
     </service>

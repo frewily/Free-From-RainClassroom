@@ -11,6 +11,7 @@ import 'auth/login_navigation.dart';
 import 'auth/session_client.dart';
 import 'auth/session_controller.dart';
 import 'auth/session_store.dart';
+import 'courses/course_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -19,11 +20,13 @@ class LoginPage extends StatefulWidget {
     this.verifier,
     this.cookies,
     this.loginViewBuilder,
+    this.coursesPageBuilder,
   });
   final SessionStore? store;
   final SessionVerifier? verifier;
   final SessionCookieSource? cookies;
   final WidgetBuilder? loginViewBuilder;
+  final WidgetBuilder? coursesPageBuilder;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -31,6 +34,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   late final SessionController _session;
+  late final SessionStore _store;
   WebViewController? _web;
   bool _showLogin = false;
   bool _openingWechat = false;
@@ -69,8 +73,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _store = widget.store ?? SecureSessionStore();
     _session = SessionController(
-      store: widget.store ?? SecureSessionStore(),
+      store: _store,
       verifier: widget.verifier ?? SessionClient(),
       cookies: widget.cookies ?? PlatformSessionCookies(),
       closeLoginView: _closeLoginView,
@@ -80,6 +85,17 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isViewCurrent(int generation) =>
       mounted && generation == _viewGeneration && _session.inLoginFlow;
+
+  Future<void> _openCourses() async {
+    final needsLogin = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder:
+            widget.coursesPageBuilder ?? (_) => CoursePage(sessions: _store),
+      ),
+    );
+    if (mounted && needsLogin == true) await _session.restore();
+  }
 
   Future<void> _closeLoginView() async {
     _viewGeneration++;
@@ -474,6 +490,18 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
+                if (loggedIn) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      key: const ValueKey('open-courses'),
+                      onPressed: _openCourses,
+                      icon: const Icon(Icons.checklist),
+                      label: const Text('选择课程班级'),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
@@ -516,7 +544,7 @@ class _LoginPageState extends State<LoginPage> {
                 const Divider(color: Color(0xffd6ded6)),
                 const SizedBox(height: 12),
                 const Text(
-                  '退出本机登录与云端监听的启停是独立操作。\n当前开发版先提供雨课堂登录功能。',
+                  '退出本机登录与云端监听的启停是独立操作。\n课程选择只保存在本机，尚未启用监听。',
                   style: TextStyle(
                     fontSize: 12,
                     height: 1.8,

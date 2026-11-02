@@ -1,6 +1,8 @@
 # 雨课堂管理客户端（开发验证版）
 
-当前版本 0.3.4：安卓雨课堂登录和 GitHub 绑定已获用户验收；Cloudflare 官方授权、应用部署合成 Worker／测试工作流、实际空任务成功、手机结果展示和关闭公网入口已完成真机验证。113 项本地测试通过。手机直连测试地址仍有限制，部署结果由云端任务严格核验。当前只使用原本人账号与空测试仓库，真实课表／课堂、Mac Flutter、自动 Fork、公开跨账号发行和长期调度另行接入。详见[最新实测与修复](../../docs/client-app-android-callback-fix.md)。
+当前版本 0.4.0：新增安卓课程班级只读加载、勾选与本机保存恢复；137 项本地 Flutter 测试、静态分析与 ARM64 构建通过。独立预览包已在真实手机读取 30 个未归档、12 个归档班级，选择保存、归档切换保留、重开恢复和清空后恢复均通过观察。选择不会启用监听或写入云端，详见[课程选择说明](../../docs/client-app-course-selection.md)。
+
+0.3.4 已完成安卓雨课堂登录、GitHub 绑定、Cloudflare 官方授权、应用部署合成 Worker／测试工作流、实际空任务成功、手机结果展示和关闭公网入口的真机验证。手机直连测试地址仍有限制，部署结果由云端任务严格核验。真实课表／课堂、Mac Flutter、自动 Fork、公开跨账号发行和长期调度另行接入。历史证据见[实测与修复](../../docs/client-app-android-callback-fix.md)。
 
 新对话先读根目录 [AGENTS.md](../../AGENTS.md) 和 [开发交接记录](../../docs/development/开发交接记录.md)，再确定下一阶段范围。
 
@@ -17,8 +19,9 @@
 3. 完成后点击“我已完成登录，检查状态”。只读接口确认会话有效且安全保存成功后，首页显示“已登录”。
 4. 重开时重新检查保存会话。断网或无法判断时保留记录；仅明确失效时请求重新登录。
 5. “退出本机登录”清除本机记录和本应用登录容器 Cookie，云端监听启停另作独立操作。
+6. 已登录后进入“选择课程班级”，读取长江雨课堂学生班级，可切换归档、搜索并保存本机选择。课程时间和云端监听需后续单独配置。
 
-同一手机的官方登录、微信返回、真实 Keystore 保存及重开需要真机验收。系统浏览器显示已登录不能证明本应用能取得它的 Cookie；本应用不会读取其他应用或系统浏览器的 Cookie，也不提供粘贴或导出会话入口。
+官方登录、微信返回、真实 Keystore 保存及重开以对应版本的真机证据为准，当前通过范围见交接记录。系统浏览器显示已登录不能证明本应用能取得它的 Cookie；本应用不会读取其他应用或系统浏览器的 Cookie，也不提供粘贴或导出会话入口。
 
 ## 本地开发
 
@@ -39,6 +42,14 @@ JNI 的原生构建还需要 CMake（≥3.10）和 Ninja。本机已找到 REA �
 
 ARM64 交付采用 `--split-per-abi`，以免第三方 AAR 额外携带其他 ABI 的原生库。此模式生成 `app-arm64-v8a-release.apk`，实际包名、版本号、架构和签名以构件核验记录为准。
 
+本机旧开发签名随缓存清理丢失，用户没有备份；旧 `.dev` 应用及数据保留。可用 Gradle 属性 `rainclient.preview=true` 构建独立包名 `top.frewily.rainclient.preview`，显示名为“雨课堂选课 · 预览”；它与旧版并存，需要用户在预览版正常登录雨课堂。可选属性 `rainclient.devKeystore` 选择本机开发密钥，密钥不得提交。默认应用 ID 仍为 `.dev`，没有旧签名时不能覆盖原安装；不要通过卸载或清数据绕过。
+
+本机现有环境入口为 `/Users/frewily/Library/Developer/rainclient/env.zsh`。预览构建示例：
+
+```sh
+env 'ORG_GRADLE_PROJECT_rainclient.preview=true' flutter build apk --release --target-platform android-arm64 --split-per-abi --no-pub
+```
+
 ## 代码阅读顺序
 
 - `lib/auth/session_controller.dart`：先看 `_loadSaved` 的有效／明确失效／暂不可用三个分支，再看退出与操作序号。
@@ -46,6 +57,7 @@ ARM64 交付采用 `--split-per-abi`，以免第三方 AAR 额外携带其他 AB
 - `lib/auth/session_store.dart`：本机安全存储及保存、删除后的回读检查。
 - `lib/auth/cookie_reader.dart`、`session_cookie.dart`：读取当前容器会话，保留值里的等号；原生桥接仅允许固定 HTTPS 站点。
 - `lib/login_page.dart`：页面与按钮如何触发上述状态变化。
+- `lib/courses/`：固定课程 GET、班级模型、账号隔离的安全选择存储、异步状态和选课页面。
 
 测试使用合成会话，覆盖网络失败保留旧记录、过期清除、取消恢复、保存失败、退出与晚到验证／读取／写入之间的交错。不要把自动测试通过当成真实账号流程已经通过。
 
