@@ -291,7 +291,7 @@ GitHub Actions 用户将值保存为仓库 Secret `SESSION`；本地 / 服务器
 
 目前仅供本人账号和指定空测试仓库开发验证，尚未接入真实课表／课堂、自动 Fork、公开跨账号发行或 Mac Flutter 客户端。开发构建仍使用开发签名，具体边界及证据见[本轮实测记录](docs/client-app-android-callback-fix.md)。
 
-新对话接手请先读 [AGENTS.md](AGENTS.md) 和 [开发交接记录](docs/development/开发交接记录.md)。选课与本机手工时间已完成，下一阶段先确定私有课表同步及执行端班级匹配的契约，再按确认范围实现。
+新对话接手请先读 [AGENTS.md](AGENTS.md) 和 [开发交接记录](docs/development/开发交接记录.md)。选课与本机手工时间已完成；[私有同步与班级匹配草案](docs/client-app-private-schedule-contract.md)已整理，下一切片建议先补稳定课次 ID 和本机待同步快照，确认后再实现。
 
 ## 开发验证：离线自动化测试
 
